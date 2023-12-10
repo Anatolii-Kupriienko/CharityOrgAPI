@@ -2,6 +2,6 @@
     int Id,
     string FirstName,
     string LastName,
-    DateOnly BirthDate,
-    DateOnly StartWorkDate,
+    DateTime BirthDate,
+    DateTime StartWorkDate,
     string Position);
