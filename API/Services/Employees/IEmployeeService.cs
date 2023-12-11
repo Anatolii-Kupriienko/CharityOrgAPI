@@ -1,10 +1,13 @@
-﻿namespace API.Services.Employees
+﻿using API.Models;
+using ErrorOr;
+
+namespace API.Services.Employees
 {
     public interface IEmployeeService
     {
-        EmployeeResponse CreateEmployee(EmployeeResponse employeeResponse);
-        void UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest);
-        void DeleteEmployee(int id);
-        List<EmployeeResponse> GetEmployee(int id = 0);
+        void CreateEmployee(Employee createRequest);
+        ErrorOr<Updated> UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest);
+        ErrorOr<Deleted> DeleteEmployee(int id);
+        ErrorOr<List<Employee>> GetEmployee(int id = 0);
     }
 }

@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using API.Services.Employees;
+using API.ServiceErrors;
+using ErrorOr;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("{controller}")]
-    public class EmployeesController : ControllerBase
+    public class EmployeesController : ApiController
     {
         private readonly IEmployeeService _employeeService;
         
@@ -19,30 +19,39 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreateEmployee(CreateEmployeeRequest request)
         {
-            var response = new EmployeeResponse(0, request.FirstName, request.LastName, request.BirthDate, request.StartWorkDate, request.Position);
-            response = _employeeService.CreateEmployee(response);
-            return CreatedAtAction(nameof(GetEmployee), new {id = response.Id},response);
+            DateTime birthDate, startWorkDate;
+            if(!DateTime.TryParse(request.BirthDate, out birthDate) || !DateTime.TryParse(request.StartWorkDate, out startWorkDate))
+            {
+                return Problem(new List<Error> { Errors.Employee.InvalidDate });
+            }
+            var requestToEmployeeResult = Employee.Create(request.FirstName, request.LastName, birthDate, startWorkDate, request.Position);
+            if (requestToEmployeeResult.IsError)
+                return Problem(requestToEmployeeResult.Errors);
+            _employeeService.CreateEmployee(requestToEmployeeResult.Value);
+            var id = EmployeeService.GetEmployeeId(requestToEmployeeResult.Value);
+            return CreatedAtAction(nameof(GetEmployee), new {Id = id }, new {});
         }
 
+        [HttpGet]
         [HttpGet("{id:int}")]
         public IActionResult GetEmployee(int id = 0)
         {
-            var response = _employeeService.GetEmployee(id);
-            return Ok(response);
+            var responseResult = _employeeService.GetEmployee(id);
+            return responseResult.Match(response => Ok(response), errors => Problem(errors));
         }
         
         [HttpPut]
         public IActionResult UpdateEmployee(UpdateEmployeeRequest request)
         {
-             _employeeService.UpdateEmployee(request);
-            return NoContent();
+            var result = _employeeService.UpdateEmployee(request);
+            return result.Match(result => NoContent(), errors => Problem(errors));
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
         {
-            _employeeService.DeleteEmployee(id);
-            return NoContent();
+            var responseResult = _employeeService.DeleteEmployee(id);
+            return responseResult.Match(result => NoContent(), errors => Problem(errors));
         }
     }
 }
