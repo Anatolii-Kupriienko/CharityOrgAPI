@@ -21,12 +21,13 @@ namespace API.Controllers
         {
             DateTime birthDate, startWorkDate;
             if(!DateTime.TryParse(request.BirthDate, out birthDate) || !DateTime.TryParse(request.StartWorkDate, out startWorkDate))
-            {
                 return Problem(new List<Error> { Errors.Employee.InvalidDate });
-            }
+
             var requestToEmployeeResult = Employee.Create(request.FirstName, request.LastName, birthDate, startWorkDate, request.Position);
+            
             if (requestToEmployeeResult.IsError)
                 return Problem(requestToEmployeeResult.Errors);
+
             _employeeService.CreateEmployee(requestToEmployeeResult.Value);
             var id = EmployeeService.GetEmployeeId(requestToEmployeeResult.Value);
             return CreatedAtAction(nameof(GetEmployee), new {Id = id }, new {});

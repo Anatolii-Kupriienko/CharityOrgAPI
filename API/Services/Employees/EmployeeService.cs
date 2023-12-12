@@ -5,11 +5,11 @@ using ErrorOr;
 namespace API.Services.Employees
 {
     public class EmployeeService : IEmployeeService
-    {
+    {        
         private static readonly string SelectQuery = @"select * from employees where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
         private readonly string InsertQuery = @"insert into employees(firstName, lastName, birthDate, startWorkDate, Position) values(@FirstName, @LastName, @BirthDate, @StartWorkDate, @Position)";
         private readonly string GetAllQuery = @"select * from employees";
-        private readonly string GetOneQuery = @"select * from employees where id = @ID";
+        private readonly string GetOneQuery = @"select * from employees where id = @Id";
         private readonly string DeleteQuery = @"delete from employees where id = @Id";
         private readonly string UpdateQuery = @"update employees set Position = @Position where id = @Id";
 
@@ -26,7 +26,7 @@ namespace API.Services.Employees
         {
             var rowsDeleted = DataAccess.UpdateData(DeleteQuery, new { Id = id });
             if (rowsDeleted == 0)
-                return Errors.Employee.NothingChanged;
+                return Errors.General.NoResult;
             return Result.Deleted;
         }
 
@@ -36,10 +36,11 @@ namespace API.Services.Employees
             if (id == 0)
                 response = DataAccess.LoadData<Employee>(GetAllQuery, null);
             else
-                response = DataAccess.GetDataById<Employee>(GetOneQuery, id);
+                response = DataAccess.LoadData(GetOneQuery, new Employee(id, null, null, null, null, null));
+                //response = DataAccess.GetDataById<Employee>(GetOneQuery, id);
             if(response.Count > 0)
                 return response;
-            return Errors.Employee.NotFound;
+            return Errors.General.NotFound;
         }
 
         public ErrorOr<Updated> UpdateEmployee(UpdateEmployeeRequest data)
@@ -48,7 +49,7 @@ namespace API.Services.Employees
                 return Errors.Employee.InvalidInput;
             var rowsDeleted =  DataAccess.UpdateData(UpdateQuery, data);
             if (rowsDeleted == 0)
-                return Errors.Employee.NothingChanged;
+                return Errors.General.NoResult;
             return Result.Updated;
         }
     }

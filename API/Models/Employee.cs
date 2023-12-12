@@ -8,12 +8,12 @@ namespace API.Models
         public const int minStringLength = 1;
         public const int maxStringLength = 50;
         public int Id { get; }
-        public string FirstName { get; }
-        public string LastName { get; }
-        public DateTime BirthDate { get; }
-        public DateTime StartWorkDate { get; }
-        public string Position { get; }
-        public Employee(int id, string firstName, string lastName, DateTime birthDate, DateTime startWorkDate, string position)
+        public string? FirstName { get; }
+        public string? LastName { get; }
+        public DateTime? BirthDate { get; }
+        public DateTime? StartWorkDate { get; }
+        public string? Position { get; }
+        public Employee(int id, string? firstName, string? lastName, DateTime? birthDate, DateTime? startWorkDate, string? position)
         {
             Id = id;
             FirstName = firstName;
