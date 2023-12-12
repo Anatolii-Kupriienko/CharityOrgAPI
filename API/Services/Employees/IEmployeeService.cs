@@ -8,6 +8,6 @@ namespace API.Services.Employees
         void CreateEmployee(Employee createRequest);
         ErrorOr<Updated> UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest);
         ErrorOr<Deleted> DeleteEmployee(int id);
-        ErrorOr<List<Employee>> GetEmployee(int id = 0);
+        ErrorOr<List<Employee>> GetEmployee(int id);
     }
 }

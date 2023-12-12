@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using API.Models;
+using ErrorOr;
 
 namespace API.ServiceErrors
 {
@@ -26,6 +27,19 @@ namespace API.ServiceErrors
                 code: "SupportDirection.Invalidid",
                 description: "Input Id value is invalid");
         }
+        public static class Project
+        {
+            public static Error InvalidName => Error.Validation(
+                code: "Project.InvalidName",
+                description: $"Project name must be at least {Models.Project.minStringLength} and at most {Models.Project.maxNameLength} characters long");
+            public static Error InvalidLink => Error.Validation(
+                code: "Project.InvalidLink",
+                description: $"Project link must be at most {Models.Project.maxLinkLength} characters long");
+            public static Error InvalidPrice => Error.Validation(
+                code: "Project.InvalidPrice",
+                description: "Project price mustn't be less than 0");
+        }
+
         public static class General
         {
             public static Error TableEmpty => Error.NotFound(

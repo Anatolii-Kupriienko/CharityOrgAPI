@@ -9,7 +9,7 @@ namespace API.Controllers
 {
     public class SupportDirectionsController : ApiController
     {
-        public ISupportDirectionService _supportDirectionService;
+        private readonly ISupportDirectionService _supportDirectionService;
 
         public SupportDirectionsController()
         {
