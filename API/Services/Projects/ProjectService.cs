@@ -1,7 +1,6 @@
 ﻿using API.Models;
 using API.ServiceErrors;
 using ErrorOr;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace API.Services.Projects
 {
@@ -38,7 +37,7 @@ namespace API.Services.Projects
         public ErrorOr<List<Project>> GetProject(int id)
         {
             List<Project> response;
-            List<ErrorOr.Error> errors = new();
+            List<Error> errors = new();
             if (id == 0)
             {
                 response = DataAccess.LoadData<Project>(GetAllQuery, null);
@@ -56,7 +55,7 @@ namespace API.Services.Projects
 
         public ErrorOr<Updated> UpdateProject(Project requestData)
         {
-            List<ErrorOr.Error> errors = new();
+            List<Error> errors = new();
             int rowsUpdated = 0;
             try
             {

@@ -5,9 +5,9 @@ namespace API.Services.Projects
 {
     public interface IProjectService
     {
-        public ErrorOr<Created> CreateProject(Project requestData);
-        public ErrorOr<Deleted> DeleteProject(int id);
-        public ErrorOr<List<Project>> GetProject(int id);
-        public ErrorOr<Updated> UpdateProject(Project requestData);
+        ErrorOr<Created> CreateProject(Project requestData);
+        ErrorOr<Updated> UpdateProject(Project requestData);
+        ErrorOr<Deleted> DeleteProject(int id);
+        ErrorOr<List<Project>> GetProject(int id);
     }
 }

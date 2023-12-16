@@ -1,5 +1,5 @@
 ﻿public record ProjectResponse(
-    int Id,
+    int? Id,
     string Name,
     double TotalPrice,
     DateTime StartDate,

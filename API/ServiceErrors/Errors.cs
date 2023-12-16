@@ -49,6 +49,19 @@ namespace API.ServiceErrors
                 description: "Project price mustn't be less than 0");
         }
 
+        public static class Report
+        {
+            public static Error InvalidLink => Error.Validation(
+                code: "Report.InvalidInput",
+                description: $"BuyingRecordsLink and RecieverReportLink must be at least {Models.Report.minStringLength} and at most {Models.Report.maxStringLength} characters long.(RecieverReportLink can be null)");
+            public static Error InvalidProjectId => Error.Validation(
+                code: "Report.InvalidInput",
+                description: "Input projectId doesn't exist");
+            public static Error MissingDate => Error.Validation(
+                code: "Report.InvalidDate",
+                description: "DateFulfilled field is invalid or missing");
+        }
+
         public static class General
         {
             public static Error TableEmpty => Error.NotFound(
@@ -60,6 +73,9 @@ namespace API.ServiceErrors
             public static Error NotFound => Error.NotFound(
                 code: "DB.NotFound",
                 description: "No results were found for given Id");
+            public static Error InvalidId => Error.Validation(
+                code: "General.InvalidId",
+                description: "Id must be a positive integer");
         }
     }
 }
