@@ -30,9 +30,11 @@ namespace API.Controllers
             var mapResult = MapRequestToModel(requestData);
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
-            _supportDirectionService.CreateSupportDirection(mapResult.Value);
+            var createResult = _supportDirectionService.CreateSupportDirection(mapResult.Value);
+            if(createResult.IsError)
+                return Problem(createResult.Errors);
             var id = SupportDirectionService.GetSupportDirectionId(mapResult.Value);
-            return CreatedAtAction(nameof(GetSupportDirection), id, new {});
+            return CreatedAtAction(nameof(GetSupportDirection), new { Id = id }, new { });
         }
 
         [HttpPut]

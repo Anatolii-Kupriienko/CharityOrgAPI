@@ -6,16 +6,24 @@ namespace API.Services.SupportDirections
 {
     public class SupportDirectionService : ISupportDirectionService
     {
-        public static readonly string SelectQuery = @"select * from supportDirections where name = @Name and description = @Description and about = @About";
+        public static readonly string SelectQuery = @"select * from supportDirections where name = @Name and description = @Description";
         public readonly string GetAllQuery = @"select * from supportDirections";
-        public readonly string GetOneQuery = @"select * from supportDirection where id = @Id";
-        public readonly string DeleteQuery = @"delete from supportDirection where id = @Id";
-        public readonly string UpdateQuery = @"update supportDirection set name = @Name, description = @Description, about = @About where id = @Id";
+        public readonly string GetOneQuery = @"select * from supportDirections where id = @Id";
+        public readonly string DeleteQuery = @"delete from supportDirections where id = @Id";
+        public readonly string UpdateQuery = @"update supportDirections set name = @Name, description = @Description, about = @About where id = @Id";
         public readonly string InsertQuery = @"insert into supportDirections(name, description, about)values(@Name, @Description, @About)";
         
-        public void CreateSupportDirection(SupportDirection data)
+        public ErrorOr<Created> CreateSupportDirection(SupportDirection data)
         {
-            DataAccess.InsertData(InsertQuery, data);
+            try
+            {
+                DataAccess.InsertData(InsertQuery, data);
+                return Result.Created;
+            }
+            catch
+            {
+                return Errors.SupportDirection.DuplicateName;
+            }
         }
 
         public ErrorOr<Deleted> DeleteSupportDirection(int id)
@@ -47,9 +55,20 @@ namespace API.Services.SupportDirections
 
         public ErrorOr<Updated> UpdateSupportDirection(SupportDirection data)
         {
-            int rowsUpdated = DataAccess.UpdateData(UpdateQuery, data);
+            List<Error> errors = new();
+            int rowsUpdated = 0;
+            try
+            {
+                rowsUpdated = DataAccess.UpdateData(UpdateQuery, data);
+            }
+            catch
+            {
+                errors.Add(Errors.SupportDirection.DuplicateName);
+            }
             if (rowsUpdated < 1)
-                return Errors.General.NoResult;
+                errors.Add(Errors.General.NoResult);
+            if (errors.Count > 0)
+                return errors;
             return Result.Updated;
         }
         public static int? GetSupportDirectionId(SupportDirection data)

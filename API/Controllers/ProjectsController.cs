@@ -30,9 +30,11 @@ namespace API.Controllers
             var mapResult = Project.Create(null, requestData.Name, requestData.TotalPrice, requestData.StartDate, null, requestData.Link, requestData.IsWithPartners, requestData.IsMilitary, null);
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
-            _projectService.CreateProject(mapResult.Value);
+            var createResult = _projectService.CreateProject(mapResult.Value);
+            if (createResult.IsError)
+                return Problem(createResult.Errors);
             var id = ProjectService.GetProjectId(mapResult.Value);
-            return CreatedAtAction(nameof(GetProject), id, new { });
+            return CreatedAtAction(nameof(GetProject), new {Id = id}, new { });
         }
 
         [HttpPut]

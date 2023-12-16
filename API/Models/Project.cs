@@ -16,9 +16,9 @@ namespace API.Models
         public string? Link { get; }
         public bool IsWithPartners { get; }
         public bool IsMilitary { get; }
-        public double? TotalFundsCollected { get; }
+        public double? TotalCollectedFunds { get; }
 
-        public Project(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalFundsCollected)
+        public Project(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalCollectedFunds)
         {
             Id = id;
             Name = name;
@@ -28,7 +28,7 @@ namespace API.Models
             Link = link;
             IsWithPartners = isWithPartners;
             IsMilitary = isMilitary;
-            TotalFundsCollected = totalFundsCollected;
+            TotalCollectedFunds = totalCollectedFunds;
         }
         public Project(int id)
         {
@@ -42,6 +42,8 @@ namespace API.Models
         public static ErrorOr<Project> Create(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalFundsCollected)
         {
             List<Error> errors = new();
+            if (startDate.Year < 1800)
+                errors.Add(Errors.Project.MissingValues);
             if (name.Length is > maxNameLength  or < 1)
                 errors.Add(Errors.Project.InvalidName);
             if (link != null && link.Length > maxLinkLength)

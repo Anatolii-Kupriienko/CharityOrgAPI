@@ -17,6 +17,9 @@ namespace API.ServiceErrors
         }
         public static class SupportDirection
         {
+            public static Error DuplicateName => Error.Validation(
+                code: "SupportDirection.DuplicateName",
+                description: "Name must be unique within the table");
             public static Error InvalidName => Error.Validation(
                 code: "SupportDirection.InvalidName",
                 description: $"Name must be at least {Models.SupportDirection.minNameLength} and at most {Models.SupportDirection.maxNameLength} characters long");
@@ -24,11 +27,17 @@ namespace API.ServiceErrors
                 code: "SupportDirection.InvalidDescription",
                 description: $"Description must be at most {Models.SupportDirection.maxDescLength} characters long");
             public static Error InvalidId => Error.Validation(
-                code: "SupportDirection.Invalidid",
+                code: "SupportDirection.InvalidId",
                 description: "Input Id value is invalid");
         }
         public static class Project
         {
+            public static Error MissingValues => Error.Validation(
+                code: "Projec.MissingValues",
+                description: "1 or more required values in body are missing");
+            public static Error DuplicateName => Error.Validation(
+                code: "Project.DuplicateName",
+                description: "Name must be unique within the table");
             public static Error InvalidName => Error.Validation(
                 code: "Project.InvalidName",
                 description: $"Project name must be at least {Models.Project.minStringLength} and at most {Models.Project.maxNameLength} characters long");
@@ -45,7 +54,7 @@ namespace API.ServiceErrors
             public static Error TableEmpty => Error.NotFound(
                 code: "DB.TableEmpty",
                 description: "Searched table has no records in it");
-            public static Error NoResult => Error.Unexpected(
+            public static Error NoResult => Error.Failure(
                code: "DB.NoResult",
                description: "No records were changed. Check input Id.");
             public static Error NotFound => Error.NotFound(
