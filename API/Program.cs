@@ -1,17 +1,14 @@
+using API.Models;
 using API.Services;
-using API.Services.Employees;
-using API.Services.Projects;
+using API.Services.Interfaces;
 using API.Services.Reports;
-using API.Services.SupportDirections;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
-    builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-    builder.Services.AddScoped<ISupportDirectionService, SupportDirectionService>();
-    builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IReportsService, ReportsService>();
-    //builder.Services.AddScoped<IService, EmployeeService>(); 
+    builder.Services.AddScoped<ICUDService, CUDService>();
+    builder.Services.AddScoped<ISimpleCRUDService, SimpleCRUDService>();
 }
 
 var app = builder.Build();

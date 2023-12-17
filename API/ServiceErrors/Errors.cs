@@ -17,9 +17,6 @@ namespace API.ServiceErrors
         }
         public static class SupportDirection
         {
-            public static Error DuplicateName => Error.Validation(
-                code: "SupportDirection.DuplicateName",
-                description: "Name must be unique within the table");
             public static Error InvalidName => Error.Validation(
                 code: "SupportDirection.InvalidName",
                 description: $"Name must be at least {Models.SupportDirection.minNameLength} and at most {Models.SupportDirection.maxNameLength} characters long");
@@ -33,11 +30,8 @@ namespace API.ServiceErrors
         public static class Project
         {
             public static Error MissingValues => Error.Validation(
-                code: "Projec.MissingValues",
+                code: "Project.MissingValues",
                 description: "1 or more required values in body are missing");
-            public static Error DuplicateName => Error.Validation(
-                code: "Project.DuplicateName",
-                description: "Name must be unique within the table");
             public static Error InvalidName => Error.Validation(
                 code: "Project.InvalidName",
                 description: $"Project name must be at least {Models.Project.minStringLength} and at most {Models.Project.maxNameLength} characters long");
@@ -54,12 +48,24 @@ namespace API.ServiceErrors
             public static Error InvalidLink => Error.Validation(
                 code: "Report.InvalidInput",
                 description: $"BuyingRecordsLink and RecieverReportLink must be at least {Models.Report.minStringLength} and at most {Models.Report.maxStringLength} characters long.(RecieverReportLink can be null)");
-            public static Error InvalidProjectId => Error.Validation(
+            public static Error InvalidProjectId => Error.NotFound(
                 code: "Report.InvalidInput",
                 description: "Input projectId doesn't exist");
             public static Error MissingDate => Error.Validation(
                 code: "Report.InvalidDate",
                 description: "DateFulfilled field is invalid or missing");
+        }
+        public static class SuppliedItem
+        {
+            public static Error InvalidName => Error.Validation(
+                code: "SuppliedItem.InvalidInput",
+                description: $"Name must be at most {Models.SuppliedItem.maxNameLength} characteres long");
+            public static Error InvalidGeneralName => Error.Validation(
+                code: "SuppliedItem.InvalidInput",
+                description: $"General Name must be at most {Models.SuppliedItem.maxGeneralNameLength} characters long");
+            public static Error InvalidAmount => Error.Validation(
+                code: "SuppliedItem.InvalidInput",
+                description: "Amount Supplied must be an integer > 0");
         }
 
         public static class General
@@ -76,6 +82,9 @@ namespace API.ServiceErrors
             public static Error InvalidId => Error.Validation(
                 code: "General.InvalidId",
                 description: "Id must be a positive integer");
+            public static Error FailedToExecute => Error.Failure(
+                code: "DB.FailedToExecute",
+                description: "Failed to access data");
         }
     }
 }

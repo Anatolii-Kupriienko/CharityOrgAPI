@@ -76,7 +76,7 @@ namespace API.Services.Reports
         }
         public static int? GetReportId(UpsertReportsRequest report)
         {
-            return DataAccess.LoadData(SelectQuery, report).First().Id;
+            return DataAccess.LoadData<Report>(SelectQuery, report).First().Id;
         }
         private Report MapQuery(Report report, Project project)
         {

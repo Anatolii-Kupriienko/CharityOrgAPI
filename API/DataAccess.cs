@@ -14,20 +14,16 @@ namespace API
         {
             Connection = new(ConnectionString);
         }
-        public static int UpdateData<T>(string query, T data)
-        {
-            return Connection.Execute(query, data);
-        }
-        public static int UpdateData<T>(string query, T[] data)
+        public static int UpdateData(string query, object data)
         {
             return Connection.Execute(query, data);
         }
 
-        public static int InsertData<T>(string query, T data)
+        public static int InsertData(string query, object data)
         {
             return Connection.Execute(query, data);
         }
-        public static List<T> LoadData<T>(string query, T? data)
+        public static List<T> LoadData<T>(string query, object? data)
         {
             if (data != null)
                 return Connection.Query<T>(query, data).ToList();
@@ -38,7 +34,7 @@ namespace API
         {
             return Connection.Query<Report, Project, Report>(query, (account, bank) => { account._Bank = bank; return account; }, new { CardNumber = cardNumber }).ToList().First();
         }*/
-        public static List<T> LoadData<T, V>(string query, T data, Func<T, V, T> func)
+        public static List<T> LoadData<T, V>(string query, object data, Func<T, V, T> func)
         {
             return Connection.Query<T, V, T>(query, func, data).ToList();
         }
