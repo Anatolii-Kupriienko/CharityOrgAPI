@@ -5,6 +5,25 @@ namespace API.ServiceErrors
 {
     public static class Errors
     {
+        public static class Subscriber
+        {
+            public static Error InvalidName => Error.Validation(
+                code: "Subscriber.InvalidInput",
+                description: $"FullName must be at most {Models.Subscriber.maxNameLength} characters long");
+            public static Error InvalidCurrency => Error.Validation(
+                code: "Subscriber.InvalidInput",
+                description: "Currency must be UAH/EUR/USD");
+            public static Error InvalidSupportDirectionId => Error.Validation(
+                code: "Subscriber.InvalidInput",
+                description: "Input supportDirectionId doesn't exist");
+            public static Error InvalidAmount => Error.Validation(
+                code: "Subscriber.InvalidInput",
+                description: "Amount must be > 0");
+            public static Error InvalidDate => Error.Validation(
+                code: "Subscriber.InvalidInput",
+                description: "DateSubscribed field wrong format or missing");
+        }
+
         public static class Donation
         {
             public static Error InvalidSender => Error.Validation(
@@ -15,7 +34,7 @@ namespace API.ServiceErrors
                 description: "Currency must be UAH/EUR/USD");
             public static Error InvalidSupportDirectionId => Error.Validation(
                 code: "Donation.InvalidInput",
-                description: "Inputed supportDirectionId doesn't exist");
+                description: "Input supportDirectionId doesn't exist");
             public static Error InvalidAmount => Error.Validation(
                 code:"Donation.InvalidInput",
                 description: "Amount must be > 0");

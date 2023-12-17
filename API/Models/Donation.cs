@@ -56,9 +56,9 @@ namespace API.Models
             {
                 DonationsResponse responseItem;
                 var project = item.SupportDirection;
+                var supportDirection = new SupportDirectionResponse(item.SupportDirection.Id, item.SupportDirection.Name, item.SupportDirection.Description, item.SupportDirection.About);
                 responseItem = new DonationsResponse(item.Id, item.Sender, item.Amount, item.Currency, 
-                    new SupportDirectionResponse(item.SupportDirection.Id, item.SupportDirection.Name, 
-                    item.SupportDirection.Description, item.SupportDirection.About), item.Date);
+                    supportDirection, item.Date);
 
                 response.Add(responseItem);
             }
