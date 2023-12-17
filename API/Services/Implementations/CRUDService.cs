@@ -22,7 +22,15 @@ namespace API.Services.Implementations
 
         public ErrorOr<Deleted> Delete(string query, int id)
         {
-            int rowsDeleted = DataAccess.UpdateData(query, new { Id = id });
+            int rowsDeleted = 0;
+            try
+            {
+                rowsDeleted = DataAccess.UpdateData(query, new { Id = id });
+            }
+            catch
+            {
+                return Error.Unexpected();
+            }
             if (rowsDeleted < 1)
                 return Errors.General.NoResult;
             return Result.Deleted;
@@ -32,14 +40,30 @@ namespace API.Services.Implementations
         {
             if (id < 0)
                 return Errors.General.InvalidId;
-            var response = DataAccess.LoadData<T>(query, new { Id = id });
+            List<T> response;
+            try
+            {
+                response = DataAccess.LoadData<T>(query, new { Id = id });
+            }
+            catch
+            {
+                return Error.Unexpected();
+            }
             if (response.Count < 1)
                 return Errors.General.NotFound;
             return response;
         }
         public ErrorOr<List<T>> Get<T, V>(string query, int id, Func<T, V, T> mapFunc)
         {
-            var response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
+            List<T> response;
+            try
+            {
+                response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
+            }
+            catch
+            {
+                return Error.Unexpected();
+            }
             if (response.Count < 1)
                 return Errors.General.NotFound;
             return response;
@@ -47,7 +71,6 @@ namespace API.Services.Implementations
 
         public ErrorOr<Updated> Update<T>(string query, T data)
         {
-            List<Error> errors = new();
             int rowsUpdated = 0;
             try
             {
@@ -55,12 +78,10 @@ namespace API.Services.Implementations
             }
             catch
             {
-                errors.Add(Errors.General.FailedToExecute);
+                return Errors.General.FailedToExecute;
             }
             if (rowsUpdated < 1)
-                errors.Add(Errors.General.NoResult);
-            if (errors.Count > 0)
-                return errors;
+                return Errors.General.NoResult;
             return Result.Updated;
         }
 

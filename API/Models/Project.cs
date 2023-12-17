@@ -3,42 +3,21 @@ using ErrorOr;
 
 namespace API.Models
 {
-    public class Project
+    public class Project(int? Id, string Name, double TotalPrice, DateTime StartDate, DateTime? FinishDate, string? Link, bool IsWithPartners, bool IsMilitary, double? TotalCollectedFunds)
     {
         public const int minStringLength = 1;
         public const int maxNameLength = 50;
         public const int maxLinkLength = 100;
-        public int? Id { get; }
-        public string Name { get; }
-        public double TotalPrice { get; }
-        public DateTime StartDate { get; }
-        public DateTime? FinishDate { get; }
-        public string? Link { get; }
-        public bool IsWithPartners { get; }
-        public bool IsMilitary { get; }
-        public double? TotalCollectedFunds { get; }
+        public int? Id { get; } = Id;
+        public string Name { get; } = Name;
+        public double TotalPrice { get; } = TotalPrice;
+        public DateTime StartDate { get; } = StartDate;
+        public DateTime? FinishDate { get; } = FinishDate;
+        public string? Link { get; } = Link;
+        public bool IsWithPartners { get; } = IsWithPartners;
+        public bool IsMilitary { get; } = IsMilitary;
+        public double? TotalCollectedFunds { get; } = TotalCollectedFunds;
 
-        public Project(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalCollectedFunds)
-        {
-            Id = id;
-            Name = name;
-            TotalPrice = totalPrice;
-            StartDate = startDate;
-            FinishDate = finishDate;
-            Link = link;
-            IsWithPartners = isWithPartners;
-            IsMilitary = isMilitary;
-            TotalCollectedFunds = totalCollectedFunds;
-        }
-        public Project(int id)
-        {
-            Id = id;
-            Name = "";
-            TotalPrice = 0;
-            StartDate = DateTime.Now;
-            IsWithPartners = false;
-            IsMilitary = false;
-        }
         public static ErrorOr<Project> Create(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalFundsCollected)
         {
             List<Error> errors = new();

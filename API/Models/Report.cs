@@ -3,31 +3,18 @@ using ErrorOr;
 
 namespace API.Models
 {
-    public class Report
+    public class Report(int? id, DateTime dateFulfilled, string buyingRecordsLink, string? recieverReportLink, int? projectId)
     {
         public  const int maxStringLength = 50;
         public const int minStringLength = 1;
         private static readonly string GetProjectsQuery = @"select id from projects";
-        public int? Id { get; }
-        public DateTime DateFulfilled { get; }
-        public string BuyingRecordsLink { get; }
-        public string? RecieverReportLink { get; }
-        public int? ProjectId { get; }
+        public int? Id { get; } = id;
+        public DateTime DateFulfilled { get; } = dateFulfilled;
+        public string BuyingRecordsLink { get; } = buyingRecordsLink;
+        public string? RecieverReportLink { get; } = recieverReportLink;
+        public int? ProjectId { get; } = projectId;
         public Project Project { get; set; }
 
-        public Report(int? id, DateTime dateFulfilled, string buyingRecordsLink, string? recieverReportLink, int? projectId)
-        {
-            Id = id;
-            DateFulfilled = dateFulfilled;
-            BuyingRecordsLink = buyingRecordsLink;
-            RecieverReportLink = recieverReportLink;
-            ProjectId = projectId;
-        }
-
-        public Report(int id)
-        {
-            Id = id;
-        }
         public static ErrorOr<Success> ValidateReport(UpsertReportsRequest report)
         {
             List<Error> errors = new();

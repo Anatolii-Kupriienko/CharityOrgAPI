@@ -3,29 +3,16 @@ using ErrorOr;
 
 namespace API.Models
 {
-    public class SupportDirection
+    public class SupportDirection(int? Id, string Name, string? Description, string? About)
     {
         public const int minNameLength = 1;
         public const int maxNameLength = 50;
         public const int maxDescLength = 150;
-        public int? Id { get; }
-        public string Name { get;  }
-        public string? Description { get; }
-        public string? About { get; }
-        public SupportDirection(int id, string name, string? description, string? about)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            About = about;
-        }
-        private SupportDirection(int? id, string name, string? description, string? about)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            About = about;
-        }
+        public int? Id { get; } = Id;
+        public string Name { get; } = Name;
+        public string? Description { get; } = Description;
+        public string? About { get; } = About;
+        
         public static ErrorOr<SupportDirection> Create(string name, string? description, string? about, int? id)
         {
             List<Error> errors = new();

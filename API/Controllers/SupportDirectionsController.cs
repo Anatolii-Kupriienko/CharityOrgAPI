@@ -24,7 +24,7 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            var responseResult = _CRUDService.Get<Employee>(query, id);
+            var responseResult = _CRUDService.Get<SupportDirection>(query, id);
             return responseResult.Match(response => Ok(response), errors => Problem(errors));
         }
 

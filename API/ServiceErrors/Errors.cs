@@ -5,6 +5,25 @@ namespace API.ServiceErrors
 {
     public static class Errors
     {
+        public static class Donation
+        {
+            public static Error InvalidSender => Error.Validation(
+                code: "Donation.InvalidInput",
+                description: $"Sender value must be at most {Models.Donation.maxSenderLength} characters long");
+            public static Error InvalidCurrency => Error.Validation(
+                code: "Donation.InvalidInput",
+                description: "Currency must be UAH/EUR/USD");
+            public static Error InvalidSupportDirectionId => Error.Validation(
+                code: "Donation.InvalidInput",
+                description: "Inputed supportDirectionId doesn't exist");
+            public static Error InvalidAmount => Error.Validation(
+                code:"Donation.InvalidInput",
+                description: "Amount must be > 0");
+            public static Error InvalidDate => Error.Validation(
+                code: "Donation.InvalidInput",
+                description: "Date field wrong format or missing");
+        }
+
         public static class Employee
         {
             public static Error InvalidDate => Error.Validation(
@@ -70,9 +89,6 @@ namespace API.ServiceErrors
 
         public static class General
         {
-            public static Error TableEmpty => Error.NotFound(
-                code: "DB.TableEmpty",
-                description: "Searched table has no records in it");
             public static Error NoResult => Error.Failure(
                code: "DB.NoResult",
                description: "No records were changed. Check input Id.");

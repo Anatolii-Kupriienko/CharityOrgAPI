@@ -49,14 +49,14 @@ namespace API.Controllers
         public IActionResult UpdateEmployee(UpdateEmployeeRequest request)
         {
             var result = _CRUDService.Update(UpdateQuery, request);
-            return result.Match(result => NoContent(), errors => Problem(errors));
+            return result.Match(result => Ok(), errors => Problem(errors));
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
         {
             var responseResult = _CRUDService.Delete(DeleteQuery, id);
-            return responseResult.Match(result => NoContent(), errors => Problem(errors));
+            return responseResult.Match(result => Ok(), errors => Problem(errors));
         }
     }
 }

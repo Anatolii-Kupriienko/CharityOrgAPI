@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Kursova.Contracts.SupportDirections
 {
     public record SupportDirectionResponse(
-        int Id,
+        int? Id,
         string Name,
         string Description,
         string About);

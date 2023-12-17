@@ -25,7 +25,7 @@ namespace API.Controllers
             var createResult = _CRUDService.Create(InsertQuery, requestData);
             if (createResult.IsError)
                 return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestData);
+            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestData).Value.Id;
             return CreatedAtAction(nameof(Get), new { Id = id }, new {});
         }
 

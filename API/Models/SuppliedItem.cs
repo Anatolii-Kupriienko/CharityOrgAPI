@@ -3,25 +3,15 @@ using ErrorOr;
 
 namespace API.Models
 {
-    public class SuppliedItem
+    public class SuppliedItem(int? Id, string? Name, int AmountSupplied, string? GeneralName)
     {
         public const int maxNameLength = 150;
         public const int maxGeneralNameLength = 100;
-        public int? Id { get; }
-        public string? Name { get; }
-        public int AmountSupplied {  get; }
-        public string? GeneralName { get; }
-        public SuppliedItem()
-        {
+        public int? Id { get; } = Id;
+        public string? Name { get; } = Name;
+        public int AmountSupplied {  get; } = AmountSupplied;
+        public string? GeneralName { get; } = GeneralName;
 
-        }
-        private SuppliedItem(int? id, string? name, int amount, string? generalName)
-        {
-            Id = id;
-            Name = name;
-            AmountSupplied = amount;
-            GeneralName = generalName;
-        }
         public static ErrorOr<SuppliedItem> Create(int? id, string? name, int amount, string? generalName)
         {
             List<Error> errors = new();

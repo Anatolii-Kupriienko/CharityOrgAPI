@@ -53,14 +53,14 @@ namespace API.Controllers
                 return Problem(mapResult.Errors);
 
             var updateResult = _CRUDService.Update(UpdateQuery, mapResult.Value);
-            return updateResult.Match(response => NoContent(), errors => Problem(errors));
+            return updateResult.Match(response => Ok(), errors => Problem(errors));
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteProject(int id)
         {
             var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(response => NoContent(), errors => Problem(errors));
+            return deleteResult.Match(response => Ok(), errors => Problem(errors));
         }
     }
 }
