@@ -7,9 +7,9 @@ using API.Services.Interfaces;
 
 namespace API.Controllers
 {
-    public class EmployeesController(ISimpleCRUDService _CRUDService) : ApiController
+    public class EmployeesController(ICRUDService _CRUDService) : ApiController
     {
-        private readonly ISimpleCRUDService _CRUDService = _CRUDService;
+        private readonly ICRUDService _CRUDService = _CRUDService;
         private readonly string SelectQuery = @"select * from employees";
         private readonly string GetIdCondition = @" where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
         private readonly string GetOneCondition = @" where id = @Id";

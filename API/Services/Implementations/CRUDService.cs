@@ -3,9 +3,9 @@ using API.ServiceErrors;
 using API.Services.Interfaces;
 using ErrorOr;
 
-namespace API.Services
+namespace API.Services.Implementations
 {
-    public class SimpleCRUDService : ISimpleCRUDService
+    public class SimpleCRUDService : ICRUDService
     {
         public ErrorOr<Created> Create(string query, object data)
         {
@@ -32,12 +32,16 @@ namespace API.Services
         {
             if (id < 0)
                 return Errors.General.InvalidId;
-            List<Error> errors = new();
             var response = DataAccess.LoadData<T>(query, new { Id = id });
             if (response.Count < 1)
-                errors.Add(Errors.General.NotFound);
-            if (errors.Count > 0)
-                return errors;
+                return Errors.General.NotFound;
+            return response;
+        }
+        public ErrorOr<List<T>> Get<T, V>(string query, int id, Func<T, V, T> mapFunc)
+        {
+            var response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
+            if (response.Count < 1)
+                return Errors.General.NotFound;
             return response;
         }
 
@@ -59,6 +63,8 @@ namespace API.Services
                 return errors;
             return Result.Updated;
         }
+
+        //change this and use for filtering
         public ErrorOr<T> GetByData<T>(string query, T data)
         {
             try
@@ -70,5 +76,7 @@ namespace API.Services
                 return Errors.General.FailedToExecute;
             }
         }
+
+
     }
 }

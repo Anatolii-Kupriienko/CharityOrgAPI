@@ -56,5 +56,27 @@ namespace API.Models
                 return errors;
             return Result.Success;
         }
+        public static Report MapQuery(Report report, Project project)
+        {
+            report.Project = project; return report;
+        }
+        public static List<ReportsResponse> MapModel(List<Report> reports)
+        {
+            List<ReportsResponse> response = new();
+            foreach (var item in reports)
+            {
+                ReportsResponse responseItem;
+                if (item.Project != null)
+                {
+                    var project = item.Project;
+                    responseItem = new ReportsResponse(item.Id, item.DateFulfilled, item.BuyingRecordsLink, item.RecieverReportLink, new ProjectResponse(project.Id, project.Name, project.TotalPrice, project.StartDate, project.FinishDate, project.Link, project.IsWithPartners, project.IsMilitary, project.TotalCollectedFunds));
+                }
+                else
+                    responseItem = new ReportsResponse(item.Id, item.DateFulfilled, item.BuyingRecordsLink, item.RecieverReportLink, null);
+
+                response.Add(responseItem);
+            }
+            return response;
+        }
     }
 }

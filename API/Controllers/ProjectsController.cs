@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class ProjectsController(ISimpleCRUDService _CRUDService) : ApiController
+    public class ProjectsController(ICRUDService _CRUDService) : ApiController
     {
-        private readonly ISimpleCRUDService _CRUDService = _CRUDService;
+        private readonly ICRUDService _CRUDService = _CRUDService;
         private readonly string SelectQuery = @"select * from projects";
         private readonly string GetIdCondition = @" where name = @Name and totalPrice = @TotalPrice and startDate = @StartDate";
         private readonly string GetOneCondition = @" where id = @Id";

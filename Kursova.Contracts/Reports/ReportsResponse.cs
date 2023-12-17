@@ -4,4 +4,4 @@ public record ReportsResponse(
     DateTime DateFulfilled,
     string BuyingRecordsLink,
     string? RecieverReportLink,
-    ProjectResponse? project);
+    ProjectResponse? Project);

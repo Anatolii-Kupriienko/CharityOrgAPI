@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace API.Controllers
 {
-    public class SuppliedItemsController(ISimpleCRUDService _CRUDService) : ApiController
+    public class SuppliedItemsController(ICRUDService _CRUDService) : ApiController
     {
-        private readonly ISimpleCRUDService _CRUDService = _CRUDService;
+        private readonly ICRUDService _CRUDService = _CRUDService;
         private readonly string InsertQuery = @"insert into suppliedItems(name, amountSupplied, generalName)values(@Name, @AmountSupplied, @GeneralName)";
         private readonly string SelectQuery = @"select * from suppliedItems";
         private readonly string GetOneCondition = @" where id = @Id";

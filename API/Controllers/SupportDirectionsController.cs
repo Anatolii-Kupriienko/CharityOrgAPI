@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class SupportDirectionsController(ISimpleCRUDService _CRUDService) : ApiController
+    public class SupportDirectionsController(ICRUDService _CRUDService) : ApiController
     {
-        private readonly ISimpleCRUDService _CRUDService = _CRUDService;
+        private readonly ICRUDService _CRUDService = _CRUDService;
         public readonly string DeleteQuery = @"delete from supportDirections where id = @Id";
         public readonly string UpdateQuery = @"update supportDirections set name = @Name, description = @Description, about = @About where id = @Id";
         public readonly string InsertQuery = @"insert into supportDirections(name, description, about)values(@Name, @Description, @About)";
