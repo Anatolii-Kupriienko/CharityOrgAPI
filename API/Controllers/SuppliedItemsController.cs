@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace API.Controllers
 {
-    public class SuppliedItemsController(ICRUDService _CRUDService) : ApiController
+    public class SuppliedItemsController : ApiController
     {
-        private readonly ICRUDService _CRUDService = _CRUDService;
+        private readonly ICRUDService _CRUDService;
         private readonly string InsertQuery = @"insert into suppliedItems(name, amountSupplied, generalName)values(@Name, @AmountSupplied, @GeneralName)";
         private readonly string SelectQuery = @"select * from suppliedItems";
         private readonly string GetOneCondition = @" where id = @Id";
@@ -18,17 +18,19 @@ namespace API.Controllers
         private readonly string UpdateQuery = @"update suppliedItems set name = @Name, amountSupplied = @AmountSupplied, generalName = @GeneralName where id = @Id";
         private readonly string DeleteQuery = @"delete from suppliedItems where id = @Id";
 
+        public SuppliedItemsController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+
         [HttpPost]
         public IActionResult CreateItem(ItemRecord requestData)
         {
             var validationResult = SuppliedItem.Create(requestData.Id, requestData.Name, requestData.AmountSupplied, requestData.GeneralName);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            var createResult = _CRUDService.Create(InsertQuery, validationResult.Value);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, validationResult.Value).Value.Id;
-            return CreatedAtAction(nameof(GetItem), new { Id = id }, new { });
+            return Create(validationResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetItem));
+            
         }
 
         [HttpGet]
@@ -38,8 +40,7 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            var responseResult = _CRUDService.Get<SuppliedItem>(query, id);
-            return responseResult.Match(response => Ok(response), errors => Problem(errors));
+            return Get<SuppliedItem>(query, id);
         }
 
         [HttpPut]
@@ -53,15 +54,13 @@ namespace API.Controllers
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
 
-            var updateResult = _CRUDService.Update(UpdateQuery, validationResult.Value);
-            return updateResult.Match(response => NoContent(), errors => Problem(errors));
+            return Update(UpdateQuery, validationResult.Value);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteItem(int id)
         {
-            var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(response => NoContent(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
     }
 }

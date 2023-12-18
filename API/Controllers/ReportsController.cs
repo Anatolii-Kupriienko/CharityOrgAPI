@@ -7,8 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
 
-    public class ReportsController(ICRUDService _CRUDService) : ApiController 
+    public class ReportsController : ApiController 
     {
+        public ReportsController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+        private readonly ICRUDService _CRUDService;
         private readonly string InsertQuery = @"insert into reports(dateFulfilled, buyingRecordsLink, recieverReportLink, projectId)values(@DateFulfilled, @BuyingRecordsLink, @RecieverReportLink, @ProjectId)";
         private readonly string DeleteQuery = @"delete from reports where id = @Id";
         private readonly string UpdateQuery = @"update reports set dateFulfilled = @DateFulfilled, buyingRecordsLink = @BuyingRecordsLink, recieverReportLink = @RecieverReportLink, projectId = @ProjectId where id = @Id";
@@ -16,42 +21,42 @@ namespace API.Controllers
         private readonly string GetIdCondition = @" where dateFulfilled = @DateFulfilled and buyingRecordsLink = @BuyingRecordsLink";
         private readonly string GetOneCondition = @" where reports.id = @Id";
         private readonly string Join = @" left join projects on projects.id = projectId";
-        private readonly ICRUDService _CRUDService = _CRUDService;
 
         [HttpPost]
         public IActionResult Create(UpsertReportsRequest requestData)
         {
+            var validationResult = Report.ValidateReport(requestData);
+            if (validationResult.IsError)
+                return Problem(validationResult.Errors);
 
-            var createResult = _CRUDService.Create(InsertQuery, requestData);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestData).Value.Id;
-            return CreatedAtAction(nameof(Get), new { Id = id }, new {});
+            return Create(requestData, InsertQuery, SelectQuery + GetIdCondition, nameof(GetReport));
         }
 
         [HttpGet]
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id = 0)
+        public IActionResult GetReport(int id = 0)
         {
             string query = SelectQuery + Join;
             if (id != 0)
                 query += GetOneCondition;
-            var getResult = _CRUDService.Get<Report, Project>(query, id, Report.MapQuery);
-            return getResult.Match((result)=>Ok(Report.MapModel(result)), errors => Problem(errors));
+
+            return Get<Report, Project, ReportsResponse>(query, id, Report.MapQuery, Report.MapModel);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteReport(int id)
         {
-            var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(result => Ok(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
 
         [HttpPut]
-        public IActionResult Update(UpsertReportsRequest requestData)
+        public IActionResult UpdateReport(UpsertReportsRequest requestData)
         {
-            var updateResult = _CRUDService.Update(UpdateQuery, requestData);
-            return updateResult.Match(result => Ok(), errors => Problem(errors));
+            var validationResult = Report.ValidateReport(requestData);
+            if (validationResult.IsError)
+                return Problem(validationResult.Errors);
+
+            return Update(UpdateQuery, requestData);
         }
     }
 }

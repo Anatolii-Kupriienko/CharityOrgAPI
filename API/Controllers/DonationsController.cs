@@ -5,9 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class DonationsController(ICRUDService _CRUDService) : ApiController
+    public class DonationsController : ApiController
     {
-        private readonly ICRUDService _CRUDService = _CRUDService;
+        public DonationsController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+
+        private readonly ICRUDService _CRUDService;
         private readonly string SelectQuery = @"select * from donations";
         private readonly string GetOneCondition = @" where donations.id = @Id";
         private readonly string GetIdCondition = @" where sender = @Sender and date = @Date and amount = @Amount and currency = @Currency";
@@ -22,39 +27,34 @@ namespace API.Controllers
             var validationResult = Donation.ValidateDonation(requestData);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            var createResult = _CRUDService.Create(InsertQuery, requestData);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestData).Value.Id;
-            return CreatedAtAction(nameof(Get), new { Id = id }, new { });
+            return Create(validationResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetDonation));
+            
         }
 
         [HttpGet]
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id = 0)
+        public IActionResult GetDonation(int id = 0)
         {
             string query = SelectQuery + Join;
             if (id != 0)
                 query += GetOneCondition;
-            var getResult = _CRUDService.Get<Donation, SupportDirection>(query, id, Donation.MapQuery);
-            return getResult.Match((result) => Ok(Donation.MapModel(result)), errors => Problem(errors));
+            return Get<Donation, SupportDirection, DonationsResponse>(query, id, Donation.MapQuery, Donation.MapModel);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteDonation(int id)
         {
-            var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(result => Ok(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
 
         [HttpPut]
-        public IActionResult Update(DonationsRequest requestData)
+        public IActionResult UpdateDonation(DonationsRequest requestData)
         {
             var validationResult = Donation.ValidateDonation(requestData);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            var updateResult = _CRUDService.Update(UpdateQuery, requestData);
-            return updateResult.Match(result => Ok(), errors => Problem(errors));
+
+            return Update(UpdateQuery, requestData);
         }
     }
 }

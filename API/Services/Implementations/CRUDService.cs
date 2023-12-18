@@ -86,11 +86,11 @@ namespace API.Services.Implementations
         }
 
         //change this and use for filtering
-        public ErrorOr<T> GetByData<T>(string query, T data)
+        public ErrorOr<int> GetByData<T>(string query, T data)
         {
             try
             {
-                return DataAccess.LoadData<T>(query, data).Last();
+                return DataAccess.LoadData<test>(query, data).Last().Id;
             }
             catch
             {
@@ -99,5 +99,13 @@ namespace API.Services.Implementations
         }
 
 
+    }
+    public class test
+    {
+        public int Id;
+        public test()
+        {
+
+        }
     }
 }

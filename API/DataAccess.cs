@@ -30,10 +30,6 @@ namespace API
             else
                 return Connection.Query<T>(query).ToList();
         }
-        /*public static List<Report> LoadReports(string query, Report data)
-        {
-            return Connection.Query<Report, Project, Report>(query, (account, bank) => { account._Bank = bank; return account; }, new { CardNumber = cardNumber }).ToList().First();
-        }*/
         public static List<T> LoadData<T, V>(string query, object data, Func<T, V, T> func)
         {
             return Connection.Query<T, V, T>(query, func, data).ToList();

@@ -7,14 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class SupportDirectionsController(ICRUDService _CRUDService) : ApiController
+    public class SupportDirectionsController : ApiController
     {
-        private readonly ICRUDService _CRUDService = _CRUDService;
+        public SupportDirectionsController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+        private readonly ICRUDService _CRUDService;
         public readonly string DeleteQuery = @"delete from supportDirections where id = @Id";
         public readonly string UpdateQuery = @"update supportDirections set name = @Name, description = @Description, about = @About where id = @Id";
         public readonly string InsertQuery = @"insert into supportDirections(name, description, about)values(@Name, @Description, @About)";
         public readonly string SelectQuery = @"select * from supportDirections";
-        private readonly string GetIdContidion = @" where name = @Name and description = @Description";
+        private readonly string GetIdCondition = @" where name = @Name and description = @Description";
         private readonly string GetOneCondition = @" where id = @Id";
 
         [HttpGet]
@@ -24,8 +28,8 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            var responseResult = _CRUDService.Get<SupportDirection>(query, id);
-            return responseResult.Match(response => Ok(response), errors => Problem(errors));
+
+            return Get<SupportDirection>(query, id);
         }
 
         [HttpPost]
@@ -34,11 +38,7 @@ namespace API.Controllers
             var mapResult = MapRequestToModel(requestData);
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
-            var createResult = _CRUDService.Create(InsertQuery, mapResult.Value);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdContidion, mapResult.Value).Value.Id;
-            return CreatedAtAction(nameof(GetSupportDirection), new { Id = id }, new { });
+            return Create(mapResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetSupportDirection));
         }
 
         [HttpPut]
@@ -52,21 +52,20 @@ namespace API.Controllers
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
 
-            var updateResult = _CRUDService.Update(UpdateQuery, mapResult.Value);
-            return updateResult.Match(response => NoContent(), errors => Problem(errors));
+            return Update(UpdateQuery, mapResult.Value);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteSupportDirection(int id)
         {
-            var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(response => NoContent(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
         private ErrorOr<SupportDirection> MapRequestToModel(UpsertSupportDirectionRequest requestData)
         {
             var requestToDataResult = SupportDirection.Create(requestData.Name, requestData.Description, requestData.About, requestData.Id);
             if (requestToDataResult.IsError)
                 return requestToDataResult.Errors;
+
             return requestToDataResult.Value;
         }
     }

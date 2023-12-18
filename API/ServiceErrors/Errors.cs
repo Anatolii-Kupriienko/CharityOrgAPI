@@ -78,7 +78,7 @@ namespace API.ServiceErrors
                 description: $"Project link must be at most {Models.Project.maxLinkLength} characters long");
             public static Error InvalidPrice => Error.Validation(
                 code: "Project.InvalidPrice",
-                description: "Project price mustn't be less than 0");
+                description: "Project price and/or collected funds mustn't be less than 0");
         }
 
         public static class Report

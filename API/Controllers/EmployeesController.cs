@@ -7,9 +7,13 @@ using API.Services.Interfaces;
 
 namespace API.Controllers
 {
-    public class EmployeesController(ICRUDService _CRUDService) : ApiController
+    public class EmployeesController : ApiController
     {
-        private readonly ICRUDService _CRUDService = _CRUDService;
+        public EmployeesController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+        private readonly ICRUDService _CRUDService;
         private readonly string SelectQuery = @"select * from employees";
         private readonly string GetIdCondition = @" where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
         private readonly string GetOneCondition = @" where id = @Id";
@@ -20,18 +24,12 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreateEmployee(CreateEmployeeRequest request)
         {
-            DateTime birthDate, startWorkDate;
-            if(!DateTime.TryParse(request.BirthDate, out birthDate) || !DateTime.TryParse(request.StartWorkDate, out startWorkDate))
-                return Problem(new List<Error> { Errors.Employee.InvalidDate });
-
-            var requestToEmployeeResult = Employee.Create(request.FirstName, request.LastName, birthDate, startWorkDate, request.Position);
+            var requestToEmployeeResult = Employee.Create(request.FirstName, request.LastName, request.BirthDate, request.StartWorkDate, request.Position);
             
             if (requestToEmployeeResult.IsError)
                 return Problem(requestToEmployeeResult.Errors);
 
-            _CRUDService.Create(InsertQuery, requestToEmployeeResult.Value);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestToEmployeeResult.Value).Value.Id;
-            return CreatedAtAction(nameof(GetEmployee), new {Id = id }, new {});
+            return Create(requestToEmployeeResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetEmployee));
         }
 
         [HttpGet]
@@ -41,22 +39,20 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            var responseResult = _CRUDService.Get<Employee>(query, id);
-            return responseResult.Match(response => Ok(response), errors => Problem(errors));
+
+            return Get<Employee>(query, id);
         }
         
         [HttpPut]
         public IActionResult UpdateEmployee(UpdateEmployeeRequest request)
         {
-            var result = _CRUDService.Update(UpdateQuery, request);
-            return result.Match(result => Ok(), errors => Problem(errors));
+            return Update(UpdateQuery, request);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
         {
-            var responseResult = _CRUDService.Delete(DeleteQuery, id);
-            return responseResult.Match(result => Ok(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
     }
 }

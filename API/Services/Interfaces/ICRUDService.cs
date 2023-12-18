@@ -9,6 +9,6 @@ namespace API.Services.Interfaces
         ErrorOr<List<T>> Get<T, V>(string query,  int id, Func<T, V, T> mapFunc);
         ErrorOr<Updated> Update<T>(string query, T data);
         ErrorOr<Deleted> Delete(string query, int id);
-        ErrorOr<T> GetByData<T>(string query, T data);
+        ErrorOr<int> GetByData<T>(string query, T data);
     }
 }

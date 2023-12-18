@@ -21,6 +21,7 @@ namespace API.Models
         public static ErrorOr<Success> Validate(SubscribersRequest subscribersRequest)
         {
             List<Error> errors = new();
+            
             if (subscribersRequest.FullName.Length > maxNameLength)
                 errors.Add(Errors.Subscriber.InvalidName);
             if (subscribersRequest.Amount <= 0)

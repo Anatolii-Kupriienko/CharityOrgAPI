@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.ServiceErrors;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +7,13 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace API.Controllers
 {
-    public class SubscribersController(ICRUDService _CRUDService) : ApiController
+    public class SubscribersController : ApiController
     {
-        private readonly ICRUDService _CRUDService = _CRUDService;
+        public SubscribersController(ICRUDService CRUDService) : base(CRUDService)
+        {
+            _CRUDService = CRUDService;
+        }
+        private readonly ICRUDService _CRUDService; 
         private readonly string SelectQuery = @"select * from subscribers";
         private readonly string GetOneCondition = @" where subscribers.id = @Id";
         private readonly string GetIdCondition = @" where fullName = @FullName and dateSubscribed = @DateSubscribed and currency = @Currency and amount = @Amount";
@@ -23,39 +28,38 @@ namespace API.Controllers
             var validationResult = Subscriber.Validate(requestData);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            var createResult = _CRUDService.Create(InsertQuery, requestData);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(SelectQuery + GetIdCondition, requestData).Value.Id;
-            return CreatedAtAction(nameof(Get), new { Id = id }, new { });
+
+            return Create(requestData, InsertQuery, SelectQuery + GetIdCondition, nameof(GetSub));
         }
 
         [HttpGet]
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id = 0)
+        public IActionResult GetSub(int id = 0)
         {
             string query = SelectQuery + Join;
             if (id != 0)
                 query += GetOneCondition;
-            var getResult = _CRUDService.Get<Subscriber, SupportDirection>(query, id, Subscriber.MapQuery);
-            return getResult.Match((result) => Ok(Subscriber.MapModel(result)), errors => Problem(errors));
+
+            return Get<Subscriber, SupportDirection, SubscribersResponse>(query, id, Subscriber.MapQuery, Subscriber.MapModel);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteSub(int id)
         {
-            var deleteResult = _CRUDService.Delete(DeleteQuery, id);
-            return deleteResult.Match(result => Ok(), errors => Problem(errors));
+            return Delete(DeleteQuery, id);
         }
 
         [HttpPut]
-        public IActionResult Update(SubscribersRequest requestData)
+        public IActionResult UpdateSub(SubscribersRequest requestData)
         {
+            if (requestData.Id is null or < 0)
+               return Problem([Errors.General.InvalidId]);
+
             var validationResult = Subscriber.Validate(requestData);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            var updateResult = _CRUDService.Update(UpdateQuery, requestData);
-            return updateResult.Match(result => Ok(), errors => Problem(errors));
+
+            return Update(UpdateQuery, requestData);
         }
     }
 }

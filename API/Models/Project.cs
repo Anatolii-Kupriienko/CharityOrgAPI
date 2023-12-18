@@ -18,6 +18,8 @@ namespace API.Models
         public bool IsMilitary { get; } = IsMilitary;
         public double? TotalCollectedFunds { get; } = TotalCollectedFunds;
 
+        public Project() : this(null, "", 0, DateTime.Now, null, null, false, false, null) { }
+
         public static ErrorOr<Project> Create(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalFundsCollected)
         {
             List<Error> errors = new();
@@ -27,7 +29,7 @@ namespace API.Models
                 errors.Add(Errors.Project.InvalidName);
             if (link != null && link.Length > maxLinkLength)
                 errors.Add(Errors.Project.InvalidLink);
-            if (totalPrice < 0)
+            if (totalPrice <= 0 || (totalFundsCollected != null && totalFundsCollected <=0))
                 errors.Add(Errors.Project.InvalidPrice);
             if (errors.Count > 0)
                 return errors;
