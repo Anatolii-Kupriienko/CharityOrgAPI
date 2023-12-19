@@ -66,6 +66,24 @@ namespace API.Services.Implementations
             }
             if (response.Count < 1)
                 return Errors.General.NotFound;
+
+            return response;
+        }
+
+        public ErrorOr<List<T>> Get<T, V, U>(string query, int id, Func<T, V, U, T> mapFunc)
+        {
+            List<T> response;
+            try
+            {
+                response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
+            }
+            catch
+            {
+                return Error.Unexpected();
+            }
+            if (response.Count < 1)
+                return Errors.General.NotFound;
+
             return response;
         }
 

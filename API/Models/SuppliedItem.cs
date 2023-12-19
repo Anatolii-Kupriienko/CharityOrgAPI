@@ -5,6 +5,7 @@ namespace API.Models
 {
     public class SuppliedItem(int? Id, string? Name, int AmountSupplied, string? GeneralName)
     {
+        public SuppliedItem() : this(null, null, 0, null) { }
         public const int maxNameLength = 150;
         public const int maxGeneralNameLength = 100;
         public int? Id { get; } = Id;

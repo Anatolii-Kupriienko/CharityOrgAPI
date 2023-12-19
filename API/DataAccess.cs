@@ -32,7 +32,11 @@ namespace API
         }
         public static List<T> LoadData<T, V>(string query, object data, Func<T, V, T> func)
         {
-            return Connection.Query<T, V, T>(query, func, data).ToList();
+            return Connection.Query(query, func, data).ToList();
+        }
+        public static List<T> LoadData<T, V, U>(string query, object data, Func<T, V, U, T> func)
+        {
+            return Connection.Query(query, func, data).ToList();
         }
     }
 }

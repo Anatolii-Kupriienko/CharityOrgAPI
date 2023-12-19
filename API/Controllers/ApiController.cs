@@ -25,28 +25,38 @@ namespace API.Controllers
             var id = _CRUDService.GetByData(getIdQuery, insertData).Value;
             return CreatedAtAction(actionName, new { Id = id }, new { });
         }
-        public IActionResult Get<T>(string query, int id)
+
+        protected IActionResult Create<T>(T insertData, string insertQuery, string actionName, int id)
         {
-            var responseResult = _CRUDService.Get<T>(query, id);
-            return responseResult.Match(response => Ok(response), errors => Problem(errors));
-        }
-        
-        public IActionResult Get<T, V, X>(string query, int id, Func<T, V, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
-        {
-            var getResult = _CRUDService.Get(query, id, mapQueryFunc);
-            return getResult.Match((result) => Ok(mapModelFunc(result)), errors => Problem(errors));
+            var createResult = _CRUDService.Create(insertQuery, insertData);
+            if (createResult.IsError)
+                return Problem(createResult.Errors);
+            return CreatedAtAction(actionName, new { Id = id }, new { });
         }
 
-        public IActionResult Update<T>(string query, T queryParams)
+        protected IActionResult Get<T>(string query, int id)
         {
-            var updateResult = _CRUDService.Update(query, queryParams);
-            return updateResult.Match(response => NoContent(), errors => Problem(errors));
+            return _CRUDService.Get<T>(query, id).Match(response => Ok(response), Problem);
         }
 
-        public IActionResult Delete(string query, int id)
+        protected IActionResult Get<T, V, X>(string query, int id, Func<T, V, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
         {
-            var deleteResult = _CRUDService.Delete(query, id);
-            return deleteResult.Match(response => NoContent(), errors => Problem(errors));
+            return _CRUDService.Get(query, id, mapQueryFunc).Match((result) => Ok(mapModelFunc(result)), Problem);
+        }
+
+        protected IActionResult Get<T, V, U, X>(string query, int id, Func<T, V, U, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
+        {
+            return _CRUDService.Get(query, id, mapQueryFunc).Match(result => Ok(mapModelFunc(result)), Problem);
+        }
+
+        protected IActionResult Update<T>(string query, T queryParams)
+        {
+            return _CRUDService.Update(query, queryParams).Match(response => NoContent(), Problem);
+        }
+
+        protected IActionResult Delete(string query, int id)
+        {
+            return _CRUDService.Delete(query, id).Match(response => NoContent(), Problem);
         }
         protected IActionResult Problem(List<Error> errors)
         {

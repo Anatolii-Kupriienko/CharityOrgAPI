@@ -54,7 +54,6 @@ namespace API.Models
             foreach (var item in subscribers)
             {
                 SubscribersResponse responseItem;
-                var project = item.SupportDirection;
                 var supportDirection = new SupportDirectionResponse(item.SupportDirection.Id, item.SupportDirection.Name, item.SupportDirection.Description, item.SupportDirection.About);
                 responseItem = new SubscribersResponse(item.Id, item.FullName, item.Amount, item.Currency,
                     item.DateSubscribed, supportDirection);

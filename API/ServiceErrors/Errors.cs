@@ -1,11 +1,22 @@
 ﻿using API.Models;
 using ErrorOr;
+using System.Runtime.CompilerServices;
 
 namespace API.ServiceErrors
 {
     public static class Errors
     {
-        public class Partner
+        public static class ProjectItem
+        {
+            public static Error InvalidItem => Error.Validation(
+                code: "ProjectItem.InvalidItemId",
+                description: "Input projectItemId doesn't exist");
+            public static Error InvalidProject => Error.Validation(
+                code: "ProjectItem.InvalidProjectId",
+                description: "Input projectId doesn't exist");
+        }
+
+        public static class Partner
         {
             public static Error InvalidInput => Error.Validation(
                 code: "Partners.InvalidInput",
