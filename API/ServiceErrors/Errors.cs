@@ -5,6 +5,13 @@ namespace API.ServiceErrors
 {
     public static class Errors
     {
+        public class Partner
+        {
+            public static Error InvalidInput => Error.Validation(
+                code: "Partners.InvalidInput",
+                description: $"OrgName and Link must be at most {Models.Partner.maxStringLength} characters long");
+        }
+
         public static class Subscriber
         {
             public static Error InvalidName => Error.Validation(
