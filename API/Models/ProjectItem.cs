@@ -6,8 +6,8 @@ namespace API.Models
 {
     public class ProjectItem(int ItemId, int ProjectId)
     {
-        private static readonly string GetItemsQuery = @"select id from suppliedItems";
-        private static readonly string GetProjectsQuery = @"select id from projects";
+        private static readonly string GetItemsQuery = @"select * from suppliedItems where id = @ItemId";
+        private static readonly string GetProjectsQuery = @"select * from projects where id = @ProjectId";
         public int ItemId { get; } = ItemId;
         public int ProjectId { get; } = ProjectId;
         public SuppliedItem? Item { get; set; }
@@ -15,12 +15,12 @@ namespace API.Models
 
         public static ErrorOr<Success> ValidateRequest(UpsertProjectItemsReuqest requestData)
         {
-            var items = DataAccess.LoadData<SuppliedItem>(GetItemsQuery, null);
-            var projects = DataAccess.LoadData<Project>(GetProjectsQuery, null);
+            var items = DataAccess.LoadData<SuppliedItem>(GetItemsQuery, requestData);
+            var projects = DataAccess.LoadData<Project>(GetProjectsQuery, requestData);
             List<Error> errors = new();
-            if (projects.Find(project => project.Id == requestData.ProjectId) == null)
+            if (projects.Count == 0)
                 errors.Add(Errors.ProjectItem.InvalidProject);
-            if (items.Find(item => item.Id == requestData.ItemId) == null)
+            if (items.Count == 0)
                 errors.Add(Errors.ProjectItem.InvalidItem);
             if (errors.Count > 0)
                 return errors;

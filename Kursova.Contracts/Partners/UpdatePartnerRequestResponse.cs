@@ -1,4 +1,4 @@
 ﻿public record UpdatePartnerRequestResponse(
-    int Id,
+    int? Id,
     string OrgName,
     string Link);

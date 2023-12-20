@@ -6,13 +6,23 @@ namespace API.ServiceErrors
 {
     public static class Errors
     {
+        public static class ProjectPartner
+        {
+            public static Error InvalidPartner => Error.Validation(
+                code: "ProjectPartner.InvalidInput",
+                description: "Input partnerId doesn't exist");
+            public static Error InvalidProejct => Error.Validation(
+                code: "ProjectPartner.InvalidInput",
+                description: "Input projectId doesn't exist");
+        }
+
         public static class ProjectItem
         {
             public static Error InvalidItem => Error.Validation(
-                code: "ProjectItem.InvalidItemId",
+                code: "ProjectItem.InvalidInput",
                 description: "Input projectItemId doesn't exist");
             public static Error InvalidProject => Error.Validation(
-                code: "ProjectItem.InvalidProjectId",
+                code: "ProjectItem.InvalidInput",
                 description: "Input projectId doesn't exist");
         }
 
