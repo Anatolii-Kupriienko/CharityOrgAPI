@@ -22,7 +22,7 @@ namespace API.Models
 
         public static ErrorOr<Project> Create(int? id, string name, double totalPrice, DateTime startDate, DateTime? finishDate, string? link, bool isWithPartners, bool isMilitary, double? totalFundsCollected)
         {
-            List<Error> errors = new();
+            List<Error> errors = [];
             if (startDate.Year < 1800)
                 errors.Add(Errors.Project.MissingValues);
             if (name.Length is > maxNameLength  or < 1)

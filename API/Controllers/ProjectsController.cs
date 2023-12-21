@@ -24,7 +24,7 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            return Get<Project>(query, id);
+            return Get<Project>(query, new { Id = id });
         }
 
         [HttpPost]
@@ -53,7 +53,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteProject(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
     }
 }

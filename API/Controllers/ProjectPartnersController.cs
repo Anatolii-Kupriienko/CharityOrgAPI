@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class ProjectPartnersController : ApiController
+    public class ProjectPartnersController(ICRUDService cRUDService) : ApiController(cRUDService)
     {
-        public ProjectPartnersController(ICRUDService cRUDService) : base(cRUDService) { }
         private readonly string SelectQuery = @"select * from projectPartners";
         private readonly string JoinPartners = @" left join partners on partners.id = partnerId";
         private readonly string JoinProjects = @" left join projects on projects.id = projectId";
@@ -71,7 +70,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeletePartnerProject(int id)
         {
-            return Delete(DeleteQuery + GetOneCondition, id);
+            return Delete(DeleteQuery + GetOneCondition, new { Id = id });
         }
 
         [HttpDelete("partners/{id:int}")]

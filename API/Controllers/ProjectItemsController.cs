@@ -33,7 +33,7 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneItemCondition;
             return Get<ProjectItem, SuppliedItem, Project, ProjectItemsResponse>
-                (query, new {Id = id}, ProjectItem.mapQuery, ProjectItem.MapModel);
+                (query, new {Id = id}, ProjectItem.MapQuery, ProjectItem.MapModel);
         }
 
         [HttpGet("project")]
@@ -44,13 +44,13 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneProjectCondition;
             return Get<ProjectItem, SuppliedItem, Project, FilteredProjectItemResponse>
-                (query, new {Id = id}, ProjectItem.mapQuery, ProjectItem.MapFilteredModel);
+                (query, new {Id = id}, ProjectItem.MapQuery, ProjectItem.MapFilteredModel);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteProjectItem(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
 
         [HttpPut]

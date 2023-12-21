@@ -36,7 +36,7 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneCondition;
 
-            return Get<Employee>(query, id);
+            return Get<Employee>(query, new {Id = id});
         }
         
         [HttpPut]
@@ -48,7 +48,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
     }
 }

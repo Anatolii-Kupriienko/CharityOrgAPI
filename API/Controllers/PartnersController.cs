@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class PartnersController : ApiController
+    public class PartnersController(ICRUDService cRUDService) : ApiController(cRUDService)
     {
-        public PartnersController(ICRUDService cRUDService) : base(cRUDService) { }
         private readonly string SelectQuery = @"select * from partners";
         private readonly string GetIdCondition = @" where orgName = @OrgName and link = @Link";
         private readonly string GetOneCondition = @" where id = @Id";
@@ -31,13 +30,13 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneCondition;
 
-            return Get<UpdatePartnerRequestResponse>(query, id);
+            return Get<UpdatePartnerRequestResponse>(query, new {Id = id});
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeletePartner(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
 
         [HttpPut]

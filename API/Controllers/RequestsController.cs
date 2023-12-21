@@ -5,14 +5,13 @@ using System.Text;
 
 namespace API.Controllers
 {
-    public class RequestsController : ApiController
+    public class RequestsController(ICRUDService cRUDService) : ApiController(cRUDService)
     {
-        public RequestsController(ICRUDService cRUDService) : base(cRUDService) { }
         private readonly string SelectQuery = @"select * from requests";
         private readonly string GetOneCondition = @" where requests.id = @Id";
         private readonly string GetIdCondition = @" where requester = @Requester and itemId = @ItemId and amount = @Amount and dateRecieved = @DateRecieved and urgency = @Urgency";
         private readonly string OrderByDateCondition = @" order by dateRecieved ";
-        private readonly string GetByRequesterCondition = @" where requester = @Requester";
+        private readonly string GetByRequesterCondition = @" where requester like @Requester";
         private readonly string GetBetweenDatesCondition = @" where dateRecieved between @StartDate and @EndDate";
         private readonly string JoinItems = @" left join suppliedItems on suppliedItems.id = itemId";
         private readonly string JoinReports = @" left join reports on reports.id = reportId";
@@ -74,19 +73,19 @@ namespace API.Controllers
 
         [HttpGet("requester")]
         [HttpGet("requester/{requesterName}")]
-        public IActionResult GetRequestsForRequester(string requesterName = "")
+        public IActionResult GetRequestsForRequester(string? requesterName)
         {
             string query = SelectQuery + JoinItems + JoinReports;
-            if (requesterName.Length > 0)
+            if (requesterName != null)
                 query += GetByRequesterCondition;
             return Get<Request, SuppliedItem, Report, AllRequestsByRequesterResponse>
-                (query, new { Requester = requesterName }, Models.Request.MapQuery, Models.Request.ModelFilteredModel);
+                (query, new { Requester = $"%{requesterName}%" }, Models.Request.MapQuery, Models.Request.ModelFilteredModel);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteRequest(int id)
         {
-            return Delete(DeleteQuery + GetOneCondition, id);
+            return Delete(DeleteQuery + GetOneCondition, new { Id = id });
         }
 
         [HttpPut]

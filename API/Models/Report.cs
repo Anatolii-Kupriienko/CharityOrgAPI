@@ -1,5 +1,6 @@
 ﻿using API.ServiceErrors;
 using ErrorOr;
+using Kursova.Contracts.Reports;
 using static API.ServiceErrors.Errors;
 
 namespace API.Models
@@ -19,7 +20,7 @@ namespace API.Models
 
         public static ErrorOr<Success> ValidateReport(UpsertReportsRequest report)
         {
-            List<Error> errors = new();
+            List<Error> errors = [];
             if (report.DateFulfilled.Year < 1800)
                 errors.Add(Errors.Report.MissingDate);
             if (report.BuyingRecordsLink.Length is < minStringLength or > maxStringLength)
@@ -51,7 +52,7 @@ namespace API.Models
         }
         public static List<ReportsResponse> MapModel(List<Report> reports)
         {
-            List<ReportsResponse> response = new();
+            List<ReportsResponse> response = [];
             foreach (var item in reports)
             {
                 ReportsResponse responseItem;

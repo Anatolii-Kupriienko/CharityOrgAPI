@@ -9,13 +9,9 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/{controller}")]
-    public class ApiController : ControllerBase
+    public class ApiController(ICRUDService CRUDService) : ControllerBase
     {
-        private readonly ICRUDService _CRUDService;
-        public ApiController(ICRUDService CRUDService)
-        {
-            _CRUDService = CRUDService;
-        }
+        private readonly ICRUDService _CRUDService = CRUDService;
 
         protected IActionResult Create<T>(T insertData, string insertQuery, string getIdQuery, string actionName)
         {
@@ -51,12 +47,12 @@ namespace API.Controllers
 
         protected IActionResult Update<T>(string query, T queryParams)
         {
-            return _CRUDService.Update(query, queryParams).Match(response => NoContent(), Problem);
+            return _CRUDService.Update(query, queryParams).Match(response => Ok(), Problem);
         }
 
-        protected IActionResult Delete(string query, int id)
+        protected IActionResult Delete(string query, object param)
         {
-            return _CRUDService.Delete(query, id).Match(response => NoContent(), Problem);
+            return _CRUDService.Delete(query, param).Match(response => Ok(), Problem);
         }
         protected IActionResult Problem(List<Error> errors)
         {

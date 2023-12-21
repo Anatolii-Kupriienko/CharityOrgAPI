@@ -8,15 +8,16 @@ using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace API.Controllers
 {
-    public class SuppliedItemsController : ApiController
+    public class SuppliedItemsController(ICRUDService CRUDService) : ApiController(CRUDService)
     {
-        public SuppliedItemsController(ICRUDService CRUDService) : base(CRUDService) { }
         private readonly string InsertQuery = @"insert into suppliedItems(name, amountSupplied, generalName)values(@Name, @AmountSupplied, @GeneralName)";
         private readonly string SelectQuery = @"select * from suppliedItems";
         private readonly string GetOneCondition = @" where id = @Id";
         private readonly string GetIdCondition = @" where name = @Name and generalName = @GeneralName";
         private readonly string UpdateQuery = @"update suppliedItems set name = @Name, amountSupplied = @AmountSupplied, generalName = @GeneralName where id = @Id";
         private readonly string DeleteQuery = @"delete from suppliedItems where id = @Id";
+        private readonly string OrderCondition = @" order by amountSupplied ";
+        private readonly string GetByNameCondition = @" where generalName like @Name or name like @Name";
 
 
         [HttpPost]
@@ -36,14 +37,34 @@ namespace API.Controllers
             string query = SelectQuery;
             if (id != 0)
                 query += GetOneCondition;
-            return Get<SuppliedItem>(query, id);
+            return Get<SuppliedItem>(query, new {Id = id});
+        }
+
+        [HttpGet("name/{name}")]
+        public IActionResult GetItemsByName(string name)
+        {
+            string query = SelectQuery + GetByNameCondition;
+            return Get<SuppliedItem>(query, new { Name = $"%{name}%" });
+        }
+
+        [HttpGet("name/sorted/{desc:bool}")]
+        [HttpGet("name/sorted/{desc:bool}/{name}")]
+        public IActionResult GetItemsByNameSorted(bool desc = false, string? name = null)
+        {
+            string query = SelectQuery;
+            if (name != null)
+                query += GetByNameCondition;
+            query += OrderCondition;
+            if (desc)
+                query += "desc";
+            return Get<SuppliedItem>(query, new { Name = $"%{name}%" });
         }
 
         [HttpPut]
         public IActionResult UpdateItem(ItemRecord requestData)
         {
             if (requestData.Id is null or < 1)
-                return Problem(new List<Error> { Errors.General.InvalidId });
+                return Problem([Errors.General.InvalidId]);
 
             var validationResult = SuppliedItem.Create(requestData.Id, requestData.Name, requestData.AmountSupplied, requestData.GeneralName);
 
@@ -56,7 +77,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteItem(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿using API.Models;
 using API.Services.Interfaces;
 using ErrorOr;
+using Kursova.Contracts.Reports;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
 
-    public class ReportsController : ApiController 
+    public class ReportsController(ICRUDService CRUDService) : ApiController(CRUDService) 
     {
-        public ReportsController(ICRUDService CRUDService) : base(CRUDService){}
         private readonly string InsertQuery = @"insert into reports(dateFulfilled, buyingRecordsLink, recieverReportLink, projectId)values(@DateFulfilled, @BuyingRecordsLink, @RecieverReportLink, @ProjectId)";
         private readonly string DeleteQuery = @"delete from reports where id = @Id";
         private readonly string UpdateQuery = @"update reports set dateFulfilled = @DateFulfilled, buyingRecordsLink = @BuyingRecordsLink, recieverReportLink = @RecieverReportLink, projectId = @ProjectId where id = @Id";
@@ -85,7 +85,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteReport(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
 
         [HttpPut]

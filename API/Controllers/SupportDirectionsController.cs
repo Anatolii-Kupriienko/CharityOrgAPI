@@ -29,7 +29,7 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneCondition;
 
-            return Get<SupportDirection>(query, id);
+            return Get<SupportDirection>(query, new { Id = id });
         }
 
         [HttpPost]
@@ -58,7 +58,7 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteSupportDirection(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
         private ErrorOr<SupportDirection> MapRequestToModel(UpsertSupportDirectionRequest requestData)
         {

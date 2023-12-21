@@ -1,5 +1,6 @@
 ﻿using API.ServiceErrors;
 using ErrorOr;
+using Kursova.Contracts.Donations;
 using Kursova.Contracts.SupportDirections;
 using static API.ServiceErrors.Errors;
 
@@ -9,7 +10,7 @@ namespace API.Models
     {
         private static readonly string GetSuppDirectionsQuery = "select id from supportDirections";
         public const int maxSenderLength = 50;
-        private static string[] possibleCurrencies = { "USD", "UAH", "EUR" };
+        private static readonly string[] possibleCurrencies = ["USD", "UAH", "EUR"];
         public int? Id { get; } = Id;
         public string Sender { get; } = Sender;
         public double Amount { get; } = Amount;
@@ -20,7 +21,7 @@ namespace API.Models
 
         public static ErrorOr<Success> ValidateDonation(DonationsRequest donationsRequest)
         {
-            List<Error> errors = new();
+            List<Error> errors = [];
             if (donationsRequest.Sender.Length > maxSenderLength)
                 errors.Add(Errors.Donation.InvalidSender);
             if (!possibleCurrencies.Contains(donationsRequest.Currency.ToUpper()))
@@ -51,7 +52,7 @@ namespace API.Models
         }
         public static List<DonationsResponse> MapModel(List<Donation> donations)
         {
-            List<DonationsResponse> response = new();
+            List<DonationsResponse> response = [];
             foreach (var item in donations)
             {
                 DonationsResponse responseItem;
@@ -64,5 +65,25 @@ namespace API.Models
             }
             return response;
         }
+        public static List<DonationsForSupportDirectionResponse> MapFilteredModel(List<Donation> models)
+        {
+            List<DonationsForSupportDirectionResponse> response = [];
+            List<int?> passedSupportDirections = [];
+            foreach (var model in models)
+            {
+                if (passedSupportDirections.Contains(model.SupportDirectionId))
+                    continue;
+                DonationsForSupportDirectionResponse responseItem;
+                List<int?> ids = [];
+                SupportDirectionResponse supportDirectionResponse = new(model.SupportDirection.Id, model.SupportDirection.Name, model.SupportDirection.Description, model.SupportDirection.About);
+                var filteredModels = models.FindAll(x => x.SupportDirectionId == model.SupportDirectionId);
+                filteredModels.ForEach(x => ids.Add(x.Id));
+                responseItem = new(ids, supportDirectionResponse, MapModel(filteredModels));
+                response.Add(responseItem);
+                passedSupportDirections.Add(model.SupportDirectionId);
+            }
+            return response;
+        }
+
     }
 }

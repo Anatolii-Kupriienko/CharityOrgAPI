@@ -20,12 +20,12 @@ namespace API.Services.Implementations
             }
         }
 
-        public ErrorOr<Deleted> Delete(string query, int id)
+        public ErrorOr<Deleted> Delete(string query, object param)
         {
-            int rowsDeleted = 0;
+            int rowsDeleted;
             try
             {
-                rowsDeleted = DataAccess.UpdateData(query, new { Id = id });
+                rowsDeleted = DataAccess.UpdateData(query, param);
             }
             catch
             {
@@ -87,7 +87,7 @@ namespace API.Services.Implementations
 
         public ErrorOr<Updated> Update<T>(string query, T data)
         {
-            int rowsUpdated = 0;
+            int rowsUpdated;
             try
             {
                 rowsUpdated = DataAccess.UpdateData(query, data);
@@ -101,7 +101,6 @@ namespace API.Services.Implementations
             return Result.Updated;
         }
 
-        //change this and use for filtering
         public ErrorOr<int> GetIdByData<T>(string query, T data)
         {
             try

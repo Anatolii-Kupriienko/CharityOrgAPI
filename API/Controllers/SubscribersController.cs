@@ -36,13 +36,14 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneCondition;
 
-            return Get<Subscriber, SupportDirection, SubscribersResponse>(query, id, Subscriber.MapQuery, Subscriber.MapModel);
+            return Get<Subscriber, SupportDirection, SubscribersResponse>
+                (query, new { Id = id }, Subscriber.MapQuery, Subscriber.MapModel);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteSub(int id)
         {
-            return Delete(DeleteQuery, id);
+            return Delete(DeleteQuery, new { Id = id });
         }
 
         [HttpPut]
