@@ -34,7 +34,8 @@ namespace API.Controllers
             string query = SelectQuery + JoinPartners + JoinProjects;
             if (id != 0)
                 query += GetOneCondition;
-            return Get<ProjectPartner, Partner, Project, ProjectPartnerResponse>(query, id, ProjectPartner.MapQuery, ProjectPartner.MapModel);
+            return Get<ProjectPartner, Partner, Project, ProjectPartnerResponse>
+                (query, new {Id = id}, ProjectPartner.MapQuery, ProjectPartner.MapModel);
         }
 
 
@@ -45,7 +46,8 @@ namespace API.Controllers
             string query = SelectQuery + JoinPartners + JoinProjects;
             if (id != 0)
                 query += GetOneByPartnerCondition;
-            return Get<ProjectPartner, Partner, Project, FilteredByPartnerProjectPartnerResponse>(query, id, ProjectPartner.MapQuery, ProjectPartner.MapFileteredPartnerModel);
+            return Get<ProjectPartner, Partner, Project, FilteredByPartnerProjectPartnerResponse>
+                (query, new { Id = id }, ProjectPartner.MapQuery, ProjectPartner.MapFileteredPartnerModel);
         }
 
         [HttpGet("project")]
@@ -55,7 +57,8 @@ namespace API.Controllers
             string query = SelectQuery + JoinPartners + JoinProjects;
             if (id != 0)
                 query += GetOneByProjectCondition;
-            return Get<ProjectPartner, Partner, Project, FilteredByProjectPartnerResponse>(query, id, ProjectPartner.MapQuery, ProjectPartner.MapFilteredByProjectModel);
+            return Get<ProjectPartner, Partner, Project, FilteredByProjectPartnerResponse>
+                (query, new { Id = id }, ProjectPartner.MapQuery, ProjectPartner.MapFilteredByProjectModel);
         }
 
         [HttpPut]

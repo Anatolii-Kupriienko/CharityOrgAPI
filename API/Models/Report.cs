@@ -1,5 +1,6 @@
 ﻿using API.ServiceErrors;
 using ErrorOr;
+using static API.ServiceErrors.Errors;
 
 namespace API.Models
 {
@@ -62,6 +63,25 @@ namespace API.Models
                 else
                     responseItem = new ReportsResponse(item.Id, item.DateFulfilled, item.BuyingRecordsLink, item.RecieverReportLink, null);
 
+                response.Add(responseItem);
+            }
+            return response;
+        }
+        public static List<ReportsByProjectResponse> MapFilteredModel(List<Report> models)
+        {
+            List<ReportsByProjectResponse> response = [];
+            List<int?> passedProjectIds = [];
+            foreach (var model in models)
+            {
+                if (passedProjectIds.Contains(model.ProjectId))
+                    continue;
+                ReportsByProjectResponse responseItem;
+                List<int?> ids = [];
+                var project = model.Project;
+                ProjectResponse projectResponse = new(project.Id, project.Name, project.TotalPrice, project.StartDate, project.FinishDate, project.Link, project.IsWithPartners, project.IsMilitary, project.TotalCollectedFunds);
+                var filteredModels = models.FindAll(x => x.ProjectId == model.ProjectId);
+                filteredModels.ForEach(x => ids.Add(x.Id));
+                responseItem = new(ids, projectResponse, MapModel(filteredModels));
                 response.Add(responseItem);
             }
             return response;

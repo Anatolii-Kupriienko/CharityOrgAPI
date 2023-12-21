@@ -9,11 +9,7 @@ namespace API.Controllers
 {
     public class ProjectsController : ApiController
     {
-        public ProjectsController(ICRUDService CRUDService) : base(CRUDService)
-        {
-            _CRUDService = CRUDService;
-        }
-        private readonly ICRUDService _CRUDService;
+        public ProjectsController(ICRUDService CRUDService) : base(CRUDService){}
         private readonly string SelectQuery = @"select * from projects";
         private readonly string GetIdCondition = @" where name = @Name and totalPrice = @TotalPrice and startDate = @StartDate";
         private readonly string GetOneCondition = @" where id = @Id";

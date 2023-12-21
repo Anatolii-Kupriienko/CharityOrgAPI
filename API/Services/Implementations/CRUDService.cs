@@ -36,14 +36,12 @@ namespace API.Services.Implementations
             return Result.Deleted;
         }
 
-        public ErrorOr<List<T>> Get<T>(string query, int id)
+        public ErrorOr<List<T>> Get<T>(string query, object param)
         {
-            if (id < 0)
-                return Errors.General.InvalidId;
             List<T> response;
             try
             {
-                response = DataAccess.LoadData<T>(query, new { Id = id });
+                response = DataAccess.LoadData<T>(query, param);
             }
             catch
             {
@@ -53,12 +51,12 @@ namespace API.Services.Implementations
                 return Errors.General.NotFound;
             return response;
         }
-        public ErrorOr<List<T>> Get<T, V>(string query, int id, Func<T, V, T> mapFunc)
+        public ErrorOr<List<T>> Get<T, V>(string query, object param, Func<T, V, T> mapFunc)
         {
             List<T> response;
             try
             {
-                response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
+                response = DataAccess.LoadData(query, param, mapFunc);
             }
             catch
             {
@@ -70,28 +68,12 @@ namespace API.Services.Implementations
             return response;
         }
 
-        public ErrorOr<List<T>> Get<T, V, U>(string query, int id, Func<T, V, U, T> mapFunc)
+        public ErrorOr<List<T>> Get<T, V, U>(string query, object param, Func<T, V, U, T> mapFunc)
         {
             List<T> response;
             try
             {
-                response = DataAccess.LoadData(query, new { Id = id }, mapFunc);
-            }
-            catch
-            {
-                return Error.Unexpected();
-            }
-            if (response.Count < 1)
-                return Errors.General.NotFound;
-
-            return response;
-        }
-        public ErrorOr<List<T>> Get<T, V, U>(string query, object data, Func<T, V, U, T> mapFunc)
-        {
-            List<T> response;
-            try
-            {
-                response = DataAccess.LoadData(query, data, mapFunc);
+                response = DataAccess.LoadData(query, param, mapFunc);
             }
             catch
             {
@@ -120,26 +102,20 @@ namespace API.Services.Implementations
         }
 
         //change this and use for filtering
-        public ErrorOr<int> GetByData<T>(string query, T data)
+        public ErrorOr<int> GetIdByData<T>(string query, T data)
         {
             try
             {
-                return DataAccess.LoadData<test>(query, data).Last().Id;
+                return DataAccess.LoadData<SupportGetClass>(query, data).Last().Id;
             }
             catch
             {
                 return Errors.General.FailedToExecute;
             }
         }
-
-
     }
-    public class test
+    public class SupportGetClass(int Id)
     {
-        public int Id;
-        public test()
-        {
-
-        }
+        public int Id { get; } = Id;
     }
 }

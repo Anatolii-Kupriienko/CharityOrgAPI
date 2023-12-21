@@ -22,7 +22,7 @@ namespace API.Controllers
             var createResult = _CRUDService.Create(insertQuery, insertData);
             if (createResult.IsError)
                 return Problem(createResult.Errors);
-            var id = _CRUDService.GetByData(getIdQuery, insertData).Value;
+            var id = _CRUDService.GetIdByData(getIdQuery, insertData).Value;
             return CreatedAtAction(actionName, new { Id = id }, new { });
         }
 
@@ -34,19 +34,14 @@ namespace API.Controllers
             return CreatedAtAction(actionName, new { Id = id }, new { });
         }
 
-        protected IActionResult Get<T>(string query, int id)
+        protected IActionResult Get<T>(string query, object param)
         {
-            return _CRUDService.Get<T>(query, id).Match(response => Ok(response), Problem);
+            return _CRUDService.Get<T>(query, param).Match(response => Ok(response), Problem);
         }
 
-        protected IActionResult Get<T, V, X>(string query, int id, Func<T, V, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
+        protected IActionResult Get<T, V, X>(string query, object param, Func<T, V, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
         {
-            return _CRUDService.Get(query, id, mapQueryFunc).Match((result) => Ok(mapModelFunc(result)), Problem);
-        }
-
-        protected IActionResult Get<T, V, U, X>(string query, int id, Func<T, V, U, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
-        {
-            return _CRUDService.Get(query, id, mapQueryFunc).Match(result => Ok(mapModelFunc(result)), Problem);
+            return _CRUDService.Get(query, param, mapQueryFunc).Match((result) => Ok(mapModelFunc(result)), Problem);
         }
 
         protected IActionResult Get<T, V, U, X>(string query, object param, Func<T, V, U, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)

@@ -9,11 +9,7 @@ namespace API.Controllers
 {
     public class SubscribersController : ApiController
     {
-        public SubscribersController(ICRUDService CRUDService) : base(CRUDService)
-        {
-            _CRUDService = CRUDService;
-        }
-        private readonly ICRUDService _CRUDService; 
+        public SubscribersController(ICRUDService CRUDService) : base(CRUDService){}
         private readonly string SelectQuery = @"select * from subscribers";
         private readonly string GetOneCondition = @" where subscribers.id = @Id";
         private readonly string GetIdCondition = @" where fullName = @FullName and dateSubscribed = @DateSubscribed and currency = @Currency and amount = @Amount";

@@ -9,11 +9,7 @@ namespace API.Controllers
 {
     public class EmployeesController : ApiController
     {
-        public EmployeesController(ICRUDService CRUDService) : base(CRUDService)
-        {
-            _CRUDService = CRUDService;
-        }
-        private readonly ICRUDService _CRUDService;
+        public EmployeesController(ICRUDService CRUDService) : base(CRUDService) { }
         private readonly string SelectQuery = @"select * from employees";
         private readonly string GetIdCondition = @" where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
         private readonly string GetOneCondition = @" where id = @Id";

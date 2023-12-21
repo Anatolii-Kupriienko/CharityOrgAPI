@@ -32,7 +32,8 @@ namespace API.Controllers
             string query = SelectQuery + JoinItems + JoinProjects;
             if (id != 0)
                 query += GetOneItemCondition;
-            return Get<ProjectItem, SuppliedItem, Project, ProjectItemsResponse>(query, id, ProjectItem.mapQuery, ProjectItem.MapModel);
+            return Get<ProjectItem, SuppliedItem, Project, ProjectItemsResponse>
+                (query, new {Id = id}, ProjectItem.mapQuery, ProjectItem.MapModel);
         }
 
         [HttpGet("project")]
@@ -42,7 +43,8 @@ namespace API.Controllers
             string query = SelectQuery + JoinItems + JoinProjects;
             if (id != 0)
                 query += GetOneProjectCondition;
-            return Get<ProjectItem, SuppliedItem, Project, FilteredProjectItemResponse>(query, id, ProjectItem.mapQuery, ProjectItem.MapFilteredModel);
+            return Get<ProjectItem, SuppliedItem, Project, FilteredProjectItemResponse>
+                (query, new {Id = id}, ProjectItem.mapQuery, ProjectItem.MapFilteredModel);
         }
 
         [HttpDelete("{id:int}")]

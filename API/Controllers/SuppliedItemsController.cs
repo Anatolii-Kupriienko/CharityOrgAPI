@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     public class SuppliedItemsController : ApiController
     {
-        private readonly ICRUDService _CRUDService;
+        public SuppliedItemsController(ICRUDService CRUDService) : base(CRUDService) { }
         private readonly string InsertQuery = @"insert into suppliedItems(name, amountSupplied, generalName)values(@Name, @AmountSupplied, @GeneralName)";
         private readonly string SelectQuery = @"select * from suppliedItems";
         private readonly string GetOneCondition = @" where id = @Id";
@@ -18,10 +18,6 @@ namespace API.Controllers
         private readonly string UpdateQuery = @"update suppliedItems set name = @Name, amountSupplied = @AmountSupplied, generalName = @GeneralName where id = @Id";
         private readonly string DeleteQuery = @"delete from suppliedItems where id = @Id";
 
-        public SuppliedItemsController(ICRUDService CRUDService) : base(CRUDService)
-        {
-            _CRUDService = CRUDService;
-        }
 
         [HttpPost]
         public IActionResult CreateItem(ItemRecord requestData)

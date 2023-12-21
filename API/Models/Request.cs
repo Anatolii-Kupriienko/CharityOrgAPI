@@ -89,7 +89,7 @@ namespace API.Models
                 ItemRecord itemResponse = new(model.Item.Id, model.Item.Name, model.Item.AmountSupplied, model.Item.GeneralName);
                 var report = model.Report;
                 ReportsResponse reportResponse = null;
-                ProjectResponse projectResponse = report.Project != null ? new(report.Project.Id, report.Project.Name, report.Project.TotalPrice, report.Project.StartDate, report.Project.FinishDate, report.Project.Link, report.Project.IsWithPartners, report.Project.IsMilitary, report.Project.TotalCollectedFunds) : null;
+                ProjectResponse projectResponse = report?.Project != null ? new(report.Project.Id, report.Project.Name, report.Project.TotalPrice, report.Project.StartDate, report.Project.FinishDate, report.Project.Link, report.Project.IsWithPartners, report.Project.IsMilitary, report.Project.TotalCollectedFunds) : null;
                 if (report != null)
                     reportResponse = new(report.Id, report.DateFulfilled, report.BuyingRecordsLink, report.RecieverReportLink, projectResponse);
                 responseItem = new(model.Id, itemResponse, model.Amount, model.DateRecieved, model.Urgency, model.Requester, reportResponse);

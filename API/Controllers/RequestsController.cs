@@ -1,6 +1,7 @@
 ﻿using API.Models;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace API.Controllers
 {
@@ -12,6 +13,7 @@ namespace API.Controllers
         private readonly string GetIdCondition = @" where requester = @Requester and itemId = @ItemId and amount = @Amount and dateRecieved = @DateRecieved and urgency = @Urgency";
         private readonly string OrderByDateCondition = @" order by dateRecieved ";
         private readonly string GetByRequesterCondition = @" where requester = @Requester";
+        private readonly string GetBetweenDatesCondition = @" where dateRecieved between @StartDate and @EndDate";
         private readonly string JoinItems = @" left join suppliedItems on suppliedItems.id = itemId";
         private readonly string JoinReports = @" left join reports on reports.id = reportId";
         private readonly string InsertQuery = @"insert into requests(itemId, amount, dateRecieved, urgency, requester)values(@ItemId, @Amount, @DateRecieved, @Urgency, @Requester)";
@@ -36,7 +38,26 @@ namespace API.Controllers
             if (id != 0)
                 query += GetOneCondition;
             return Get<Request, SuppliedItem, Report, RequestsResponse>
-                (query, id, Models.Request.MapQuery, Models.Request.MapModel);
+                (query, new { Id = id }, Models.Request.MapQuery, Models.Request.MapModel);
+        }
+
+        [HttpGet("{startDate:datetime}/{endDate:datetime}")]
+        public IActionResult GetRequestBetweenDates(DateTime startDate, DateTime endDate)
+        {
+            string query = SelectQuery + JoinItems + JoinReports + GetBetweenDatesCondition;
+            return Get<Request, SuppliedItem, Report, RequestsResponse>
+                (query, new { StartDate = startDate, EndDate = endDate }, Models.Request.MapQuery, Models.Request.MapModel);
+        }
+
+        [HttpGet("orderByDate/{startDate:datetime}/{endDate:datetime}/{desc:bool}")]
+        [HttpGet("orderByDate/{startDate:datetime}/{endDate:datetime}")]
+        public IActionResult GetRequestsBetweenDatesOrdered(DateTime startDate, DateTime endDate, bool desc = false)
+        {
+            string query = SelectQuery + JoinItems + JoinReports + GetBetweenDatesCondition + OrderByDateCondition;
+            if (desc)
+                query += "desc";
+            return Get<Request, SuppliedItem, Report, RequestsResponse>
+                (query, new { StartDate = startDate, EndDate = endDate }, Models.Request.MapQuery, Models.Request.MapModel);
         }
 
         [HttpGet("orderByDate")]
@@ -47,7 +68,7 @@ namespace API.Controllers
             if (desc)
                 query += "desc";
             return Get<Request, SuppliedItem, Report, RequestsResponse>
-                (query, 0, Models.Request.MapQuery, Models.Request.MapModel);
+                (query, new { }, Models.Request.MapQuery, Models.Request.MapModel);
         }
 
 
