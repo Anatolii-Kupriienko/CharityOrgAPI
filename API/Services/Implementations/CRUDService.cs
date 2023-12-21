@@ -86,6 +86,22 @@ namespace API.Services.Implementations
 
             return response;
         }
+        public ErrorOr<List<T>> Get<T, V, U>(string query, object data, Func<T, V, U, T> mapFunc)
+        {
+            List<T> response;
+            try
+            {
+                response = DataAccess.LoadData(query, data, mapFunc);
+            }
+            catch
+            {
+                return Error.Unexpected();
+            }
+            if (response.Count < 1)
+                return Errors.General.NotFound;
+
+            return response;
+        }
 
         public ErrorOr<Updated> Update<T>(string query, T data)
         {

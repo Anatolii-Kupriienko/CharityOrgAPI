@@ -6,6 +6,28 @@ namespace API.ServiceErrors
 {
     public static class Errors
     {
+        public static class Request
+        {
+            public static Error InvalidRequester => Error.Validation(
+                code: "Request.InvalidInput",
+                description: $"Requester value must be at most {Models.Request.maxStringLength} characters long");
+            public static Error InvalidUrgency => Error.Validation(
+                code: "Request.InvalidInput",
+                description: $"Urgency must be one of the following values: {Models.Request.PossibleUrgencyValues.ToString()}");
+            public static Error ItemDoesntExist => Error.NotFound(
+                code: "Request.InvalidInput",
+                description: "Input itemId doesn't exist");
+            public static Error ReportDoesntExist => Error.NotFound(
+                code: "Request.InvalidInput",
+                description: "Input reportId doesn't exist");
+            public static Error InvalidAmount => Error.Validation(
+                code: "Request.InvalidInput",
+                description: "Amount must be > 0");
+            public static Error InvalidDate => Error.Validation(
+                code: "Request.InvalidInput",
+                description: "DateRecieved is in the future or missing");
+        }
+
         public static class ProjectPartner
         {
             public static Error InvalidPartner => Error.Validation(

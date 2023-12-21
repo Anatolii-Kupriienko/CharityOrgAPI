@@ -49,6 +49,11 @@ namespace API.Controllers
             return _CRUDService.Get(query, id, mapQueryFunc).Match(result => Ok(mapModelFunc(result)), Problem);
         }
 
+        protected IActionResult Get<T, V, U, X>(string query, object param, Func<T, V, U, T> mapQueryFunc, Func<List<T>, List<X>> mapModelFunc)
+        {
+            return _CRUDService.Get(query, param, mapQueryFunc).Match(result => Ok(mapModelFunc(result)), Problem);
+        }
+
         protected IActionResult Update<T>(string query, T queryParams)
         {
             return _CRUDService.Update(query, queryParams).Match(response => NoContent(), Problem);

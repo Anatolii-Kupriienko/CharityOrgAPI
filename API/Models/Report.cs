@@ -5,6 +5,7 @@ namespace API.Models
 {
     public class Report(int? id, DateTime dateFulfilled, string buyingRecordsLink, string? recieverReportLink, int? projectId)
     {
+        public Report() : this(null, DateTime.Now, "", null, null) { }
         public  const int maxStringLength = 50;
         public const int minStringLength = 1;
         private static readonly string GetProjectsQuery = @"select id from projects";

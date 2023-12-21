@@ -21,13 +21,14 @@ namespace API.Models
         public static ErrorOr<Success> Validate(SubscribersRequest subscribersRequest)
         {
             List<Error> errors = new();
-            
             if (subscribersRequest.FullName.Length > maxNameLength)
                 errors.Add(Errors.Subscriber.InvalidName);
             if (subscribersRequest.Amount <= 0)
                 errors.Add(Errors.Subscriber.InvalidAmount);
             if (subscribersRequest.DateSubscribed.Year < 1800)
                 errors.Add(Errors.Subscriber.InvalidDate);
+            if (!possibleCurrencies.Contains(subscribersRequest.Currency))
+                errors.Add(Errors.Subscriber.InvalidCurrency);
             var supportDirections = DataAccess.LoadData<SupportDirection>(GetSuppDirectionsQuery, null);
             bool doesIdExist = false;
             foreach (var supportDirection in supportDirections)
