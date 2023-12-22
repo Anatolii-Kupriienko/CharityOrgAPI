@@ -9,7 +9,7 @@ namespace API.Controllers
     {
         private readonly string SelectQuery = @"select * from requests";
         private readonly string GetOneCondition = @" where requests.id = @Id";
-        private readonly string GetIdCondition = @" where requester = @Requester and itemId = @ItemId and amount = @Amount and dateRecieved = @DateRecieved and urgency = @Urgency";
+        private readonly string SelectIdQuery = @"select id from requests where requester = @Requester and itemId = @ItemId";
         private readonly string OrderByDateCondition = @" order by dateRecieved ";
         private readonly string GetByRequesterCondition = @" where requester like @Requester";
         private readonly string GetBetweenDatesCondition = @" where dateRecieved between @StartDate and @EndDate";
@@ -25,7 +25,7 @@ namespace API.Controllers
         public IActionResult CreateRequest(CreateRequestRequest requestData)
         {
             return Models.Request.Create(requestData).
-                Match(result => Create(result, InsertQuery, SelectQuery + GetIdCondition, nameof(GetRequest))
+                Match(result => Create(result, InsertQuery, SelectIdQuery, nameof(GetRequest))
                 , Problem);
         }
 

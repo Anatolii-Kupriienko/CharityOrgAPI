@@ -13,7 +13,7 @@ namespace API.Controllers
         private readonly string GetOneCondition = @" where projectPartners.id = @Id";
         private readonly string GetOneByPartnerCondition = @" where partnerId = @Id";
         private readonly string GetOneByProjectCondition = @" where projectId = @Id";
-        private readonly string GetIdCondition = @" where partnerId = @PartnerId and projectId = @ProjectId";
+        private readonly string SelectIdQuery = @"select id from projectPartners where partnerId = @PartnerId and projectId = @ProjectId";
         private readonly string InsertQuery = @"insert into projectPartners(partnerId, projectId)values(@PartnerId, @ProjectId)";
         private readonly string UpdateQuery = @"update projectPartners set partnerId = @ProjectId, projectId = @ProjectId where id = @Id";
         private readonly string DeleteQuery = @"delete from projectPartners";
@@ -22,7 +22,7 @@ namespace API.Controllers
         public IActionResult CreateProjectPartner(CreateProjectPartnerRequest requestData)
         {
             return ProjectPartner.ValidateRequest(null, requestData.PartnerId, requestData.ProjectId).Match(
-                result => Create(requestData, InsertQuery, SelectQuery + GetIdCondition, nameof(GetProjectPartner))
+                result => Create(requestData, InsertQuery, SelectIdQuery, nameof(GetProjectPartner))
                 , Problem);
         }
 
@@ -76,13 +76,13 @@ namespace API.Controllers
         [HttpDelete("partners/{id:int}")]
         public IActionResult DeletePartnerProjectByPartner(int id)
         {
-            return Delete(DeleteQuery + GetOneByPartnerCondition, id);
+            return Delete(DeleteQuery + GetOneByPartnerCondition, new { Id = id });
         }
 
         [HttpDelete("projects/{id:int}")]
         public IActionResult DeletePartnerProjectByProject(int id)
         {
-            return Delete(DeleteQuery + GetOneByProjectCondition, id);
+            return Delete(DeleteQuery + GetOneByProjectCondition, new { Id = id });
         }
     }
 }

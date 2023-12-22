@@ -8,7 +8,7 @@ namespace API.Controllers
     public class PartnersController(ICRUDService cRUDService) : ApiController(cRUDService)
     {
         private readonly string SelectQuery = @"select * from partners";
-        private readonly string GetIdCondition = @" where orgName = @OrgName and link = @Link";
+        private readonly string SelectIdQuery = @"select id from partners where orgName = @OrgName and link = @Link";
         private readonly string GetOneCondition = @" where id = @Id";
         private readonly string InsertQuery = @"insert into partners(orgName, link)values(@OrgName, @Link)";
         private readonly string UpdateQuery = @"update partners set orgName = @OrgName, link = @Link where id = @Id";
@@ -18,7 +18,7 @@ namespace API.Controllers
         public IActionResult CreatePartner(CreatePartnerRecord requestData)
         {
             return Partner.ValidateStrings(requestData.OrgName, requestData.Link)
-            .Match(result => Create(requestData, InsertQuery, SelectQuery + GetIdCondition, nameof(GetPartner)), 
+            .Match(result => Create(requestData, InsertQuery, SelectIdQuery, nameof(GetPartner)), 
             Problem);
         }
 

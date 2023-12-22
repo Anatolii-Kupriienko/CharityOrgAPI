@@ -18,7 +18,7 @@ namespace API.Controllers
         public readonly string UpdateQuery = @"update supportDirections set name = @Name, description = @Description, about = @About where id = @Id";
         public readonly string InsertQuery = @"insert into supportDirections(name, description, about)values(@Name, @Description, @About)";
         public readonly string SelectQuery = @"select * from supportDirections";
-        private readonly string GetIdCondition = @" where name = @Name and description = @Description";
+        private readonly string SelectIdQuery = @"select id from supportDirections where name = @Name and description = @Description";
         private readonly string GetOneCondition = @" where id = @Id";
 
         [HttpGet]
@@ -38,7 +38,7 @@ namespace API.Controllers
             var mapResult = MapRequestToModel(requestData);
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
-            return Create(mapResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetSupportDirection));
+            return Create(mapResult.Value, InsertQuery, SelectIdQuery, nameof(GetSupportDirection));
         }
 
         [HttpPut]

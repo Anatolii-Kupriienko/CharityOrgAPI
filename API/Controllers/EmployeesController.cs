@@ -11,7 +11,7 @@ namespace API.Controllers
     {
         public EmployeesController(ICRUDService CRUDService) : base(CRUDService) { }
         private readonly string SelectQuery = @"select * from employees";
-        private readonly string GetIdCondition = @" where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
+        private readonly string SelectIdQuery = @"select id from employees where firstName = @FirstName and lastName = @LastName and birthDate = @BirthDate and startWorkDate = @StartWorkDate and Position = @Position;";
         private readonly string GetOneCondition = @" where id = @Id";
         private readonly string InsertQuery = @"insert into employees(firstName, lastName, birthDate, startWorkDate, Position) values(@FirstName, @LastName, @BirthDate, @StartWorkDate, @Position)";
         private readonly string DeleteQuery = @"delete from employees where id = @Id";
@@ -25,7 +25,7 @@ namespace API.Controllers
             if (requestToEmployeeResult.IsError)
                 return Problem(requestToEmployeeResult.Errors);
 
-            return Create(requestToEmployeeResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetEmployee));
+            return Create(requestToEmployeeResult.Value, InsertQuery, SelectIdQuery, nameof(GetEmployee));
         }
 
         [HttpGet]

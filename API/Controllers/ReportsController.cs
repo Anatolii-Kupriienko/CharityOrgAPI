@@ -14,7 +14,7 @@ namespace API.Controllers
         private readonly string DeleteQuery = @"delete from reports where id = @Id";
         private readonly string UpdateQuery = @"update reports set dateFulfilled = @DateFulfilled, buyingRecordsLink = @BuyingRecordsLink, recieverReportLink = @RecieverReportLink, projectId = @ProjectId where id = @Id";
         private readonly string SelectQuery = @"select * from reports";
-        private readonly string GetIdCondition = @" where dateFulfilled = @DateFulfilled and buyingRecordsLink = @BuyingRecordsLink";
+        private readonly string SelectIdQuery = @"select id from reports where dateFulfilled = @DateFulfilled and buyingRecordsLink = @BuyingRecordsLink";
         private readonly string GetOneCondition = @" where reports.id = @Id";
         private readonly string GetForProjectCondition = @" where projectId = @Id";
         private readonly string GetBetweenDatesCondition = @" where dateFulfilled between @StartDate and @EndDate";
@@ -28,7 +28,7 @@ namespace API.Controllers
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
 
-            return Create(requestData, InsertQuery, SelectQuery + GetIdCondition, nameof(GetReport));
+            return Create(requestData, InsertQuery, SelectIdQuery, nameof(GetReport));
         }
 
         [HttpGet]

@@ -11,7 +11,7 @@ namespace API.Controllers
     {
         public ProjectsController(ICRUDService CRUDService) : base(CRUDService){}
         private readonly string SelectQuery = @"select * from projects";
-        private readonly string GetIdCondition = @" where name = @Name and totalPrice = @TotalPrice and startDate = @StartDate";
+        private readonly string SelectIdQuery = @"select id from projects where name = @Name and totalPrice = @TotalPrice and startDate = @StartDate";
         private readonly string GetOneCondition = @" where id = @Id";
         private readonly string InsertQuery = @"insert into projects(name, totalPrice, startDate, finishDate, link, isWithPartners, isMilitary, totalCollectedFunds)values(@Name, @TotalPrice, @StartDate, @FinishDate, @Link, @IsWithPartners, @IsMilitary, @TotalCollectedFunds)";
         private readonly string DeleteQuery = @"delete from projects where id = @Id";
@@ -33,7 +33,7 @@ namespace API.Controllers
             var mapResult = Project.Create(null, requestData.Name, requestData.TotalPrice, requestData.StartDate, null, requestData.Link, requestData.IsWithPartners, requestData.IsMilitary, null);
             if (mapResult.IsError)
                 return Problem(mapResult.Errors);
-            return Create(mapResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetProject));
+            return Create(mapResult.Value, InsertQuery, SelectIdQuery, nameof(GetProject));
         }
 
         [HttpPut]

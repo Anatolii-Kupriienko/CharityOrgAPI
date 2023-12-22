@@ -13,7 +13,7 @@ namespace API.Controllers
         private readonly string InsertQuery = @"insert into suppliedItems(name, amountSupplied, generalName)values(@Name, @AmountSupplied, @GeneralName)";
         private readonly string SelectQuery = @"select * from suppliedItems";
         private readonly string GetOneCondition = @" where id = @Id";
-        private readonly string GetIdCondition = @" where name = @Name and generalName = @GeneralName";
+        private readonly string SelectIdQuery = @"select id from suppliedItems where name = @Name and generalName = @GeneralName";
         private readonly string UpdateQuery = @"update suppliedItems set name = @Name, amountSupplied = @AmountSupplied, generalName = @GeneralName where id = @Id";
         private readonly string DeleteQuery = @"delete from suppliedItems where id = @Id";
         private readonly string OrderCondition = @" order by amountSupplied ";
@@ -26,7 +26,7 @@ namespace API.Controllers
             var validationResult = SuppliedItem.Create(requestData.Id, requestData.Name, requestData.AmountSupplied, requestData.GeneralName);
             if (validationResult.IsError)
                 return Problem(validationResult.Errors);
-            return Create(validationResult.Value, InsertQuery, SelectQuery + GetIdCondition, nameof(GetItem));
+            return Create(validationResult.Value, InsertQuery, SelectIdQuery, nameof(GetItem));
             
         }
 
