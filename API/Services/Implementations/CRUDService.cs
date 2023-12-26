@@ -11,7 +11,7 @@ namespace API.Services.Implementations
         {
             try
             {
-                DataAccess.InsertData(query, data);
+                DataAccess.UpdateData(query, data);
                 return Result.Created;
             }
             catch

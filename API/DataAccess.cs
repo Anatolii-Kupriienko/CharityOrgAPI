@@ -11,42 +11,28 @@ namespace API
 
         public static int UpdateData(string query, object data)
         {
-            using (SqlConnection connection = new(ConnectionString))
-            {
-                return connection.Execute(query, data);
-            }
+            SqlConnection connection = new(ConnectionString);
+            return connection.Execute(query, data);
         }
 
-        public static int InsertData(string query, object data)
-        {
-            using (SqlConnection connection = new(ConnectionString))
-            {
-                return connection.Execute(query, data);
-            }
-        }
         public static List<T> LoadData<T>(string query, object? data)
         {
-            using (SqlConnection connection = new(ConnectionString))
-            {
-                if (data != null)
-                    return connection.Query<T>(query, data).ToList();
-                else
-                    return connection.Query<T>(query).ToList();
-            }
+            SqlConnection connection = new(ConnectionString);
+            if (data != null)
+                return connection.Query<T>(query, data).ToList();
+            else
+                return connection.Query<T>(query).ToList();
         }
         public static List<T> LoadData<T, V>(string query, object data, Func<T, V, T> func)
         {
-            using (SqlConnection connection = new(ConnectionString))
-            {
-                return connection.Query(query, func, data).ToList();
-            }        
+            SqlConnection connection = new(ConnectionString);
+            return connection.Query(query, func, data).ToList();
+
         }
         public static List<T> LoadData<T, V, U>(string query, object data, Func<T, V, U, T> func)
         {
-            using (SqlConnection connection = new(ConnectionString))
-            {
-                return connection.Query(query, func, data).ToList();
-            }
+            SqlConnection connection = new(ConnectionString);
+            return connection.Query(query, func, data).ToList();
         }
     }
 }
