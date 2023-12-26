@@ -24,10 +24,7 @@ namespace API.Controllers
 
         protected IActionResult Create<T>(T insertData, string insertQuery, string actionName, int id)
         {
-            var createResult = _CRUDService.Create(insertQuery, insertData);
-            if (createResult.IsError)
-                return Problem(createResult.Errors);
-            return CreatedAtAction(actionName, new { Id = id }, new { });
+            return _CRUDService.Create(insertQuery, insertData).Match(result => CreatedAtAction(actionName, new { Id = id }, new { }), Problem);
         }
 
         protected IActionResult Get<T>(string query, object param)
