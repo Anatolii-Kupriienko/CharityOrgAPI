@@ -19,6 +19,10 @@ namespace API.Controllers
         private readonly string DeleteQuery = @"delete from requests";
         private readonly string UpdateQuery = @"update requests set itemId = @ItemId, amount = @Amount, dateRecieved = @DateRecieved, urgency = @Urgency, requester = @Requester, reportId = @ReportId where id = @Id";
         private readonly string SetReportQuery = @"update requests set reportId = @ReportId where id = @Id";
+        private readonly string GetByUrgencyCondition = @" where urgency like @Urgency";
+        private readonly string SortByUrgency = @" order by urgency";
+        private readonly string GetCompletedCondition = @" where reportId is not null";
+        private readonly string GetNotCompletedCondition = @" where reportId is null";
 
 
         [HttpPost]
@@ -81,6 +85,38 @@ namespace API.Controllers
             return Get<Request, SuppliedItem, Report, AllRequestsByRequesterResponse>
                 (query, new { Requester = $"%{requesterName}%" }, Models.Request.MapQuery, Models.Request.ModelFilteredModel);
         }
+
+        [HttpGet("urgency")]
+        [HttpGet("urgency/{urgency}")]
+        public IActionResult GetRequestsForUrgency(string? urgency)
+        {
+            string query = SelectQuery + JoinItems + JoinReports;
+            if (urgency != null)
+                query += GetByUrgencyCondition;
+            query += SortByUrgency;
+            return Get<Request, SuppliedItem, Report, RequestsResponse>
+                (query, new { Urgency = $"%{urgency}%" }, Models.Request.MapQuery, Models.Request.MapModel);
+        }
+
+        [HttpGet("completed")]
+        public IActionResult GetCompletedRequests()
+        {
+            string query = SelectQuery + JoinItems + JoinReports + GetCompletedCondition;
+            return Get<Request, SuppliedItem, Report, RequestsResponse>
+                (query, new { }, Models.Request.MapQuery, Models.Request.MapModel);
+        }
+
+        [HttpGet("notCompleted")]
+        [HttpGet("notCompleted/{sortByUrgency:bool}")]
+        public IActionResult GetNotCompletedRequests(bool sortByUrgency = false)
+        {
+            string query = SelectQuery + JoinItems + JoinReports + GetNotCompletedCondition;
+            if (sortByUrgency)
+                query += SortByUrgency;
+            return Get<Request, SuppliedItem, Report, RequestsResponse>
+                (query, new { }, Models.Request.MapQuery, Models.Request.MapModel);
+        }
+        
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteRequest(int id)
